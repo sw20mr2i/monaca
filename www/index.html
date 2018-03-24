@@ -9,6 +9,7 @@
   <script src="lib/onsenui/js/onsenui.min.js"></script>
   <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/memo.js"></script>
 
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
@@ -16,6 +17,9 @@
   <link rel="stylesheet" href="css/style.css">
 
   <script>
+//    param_obj =new new_param();
+//    console.log(param_obj)
+
     ons.bootstrap()
       .controller('AppController', function($scope) {
         this.load = function(page) {
@@ -26,10 +30,31 @@
         this.toggle = function() {
           $scope.splitter.left.toggle();
         };
+        
+        this.rangeChange = function(type,param) {
+            //set_param(param_obj,type,param)
+            set_param($scope.obj,type,param)
+            console.log(get_param($scope.obj,type))
+        };
+//        $scope.obj = { type: 'PlugGap', param: '80'};
+        $scope.obj = [ {"id":"0","type":"PlugGap", "param":"80"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
+                     {"id":"2","type":"FrontSprocket", "param":"11"},{"id":"3","type":"RearSprocket", "param":"80"},
+                     {"id":"4","type":"DriverFeeling", "param":"50"}];
       });
 
     ons.ready(function() {
+//        paramData =[ {"type":"PlugGap", "param":"80"}, {"type":"ExhaustJoint", "param":"60"},
+//                             {"type":"FrontSprocket", "param":"11"},{"type":"RearSprocket", "param":"80"},
+//                             {"type":"DriverFeeling", "param":"50"}];
+//        param = paramData[0].param
         console.log("Onsen UI is ready!");
+//        monaca.getDeviceId(function(idid){
+//                    alert('Device ID: ' + idid);
+//                });
+        var date = (new Date()).toString()
+        console.log(date)
+//        PlugGap = get_param(paramData,'PlugGap')
+//        console.log(PlugGap)
     });
   </script>
 </head>
@@ -80,7 +105,9 @@
     </ons-page>
   </template>
   <ons-template id="settings_setting.html">
-    <ons-page>
+    <ons-page ng-init="PlugGap = obj[0].param ;ExhaustJoint = obj[1].param ;
+                    FrontSprocket = obj[2].param ;RearSprocket = obj[3].param ;
+                    DriverFeeling = obj[5].param ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -95,33 +122,45 @@
         <div id="info">
         <ons-row>
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="md-volume-down"></ons-icon>
+            <ons-icon icon="ion-code-download"></ons-icon>
           </ons-col>
           <ons-col width="100px" style="text-align: left; line-height: 31px;">PlugGap</ons-col>
           <ons-col>
-            <ons-range style="width: 100%;" min="50" max="120" ng-model="PlugGap"></ons-range>
+            <ons-range style="width: 100%;" min="50" max="120" ng-model="PlugGap" ng-change="app.rangeChange('PlugGap',PlugGap)"></ons-range>
           </ons-col>
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{PlugGap}}
           </ons-col>
         </ons-row>
         <ons-row style="margin-top: 10px;">
+        <ons-row>
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear"></ons-icon> 
+            <ons-icon icon="ion-android-phone-landscape"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">ExhaustJoint</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="40" max="180" ng-model="ExhaustJoint" ng-change="app.rangeChange('ExhaustJoint',ExhaustJoint)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{ExhaustJoint}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
           </ons-col>
           <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontSprocket</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
-            <ons-range style="width: 100%;" min="7" max="25" ng-model="FrontSprocket"></ons-range>
+            <ons-range style="width: 100%;" min="7" max="25" ng-model="FrontSprocket" ng-change="app.rangeChange('FrontSprocket',FrontSprocket)"></ons-range>
           </ons-col>
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{FrontSprocket}}
           </ons-col>
         </ons-row>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-cog"></ons-icon>
+            <ons-icon icon="ion-ios-gear"></ons-icon>
           </ons-col>
           <ons-col width="100px" style="text-align: left; line-height: 31px;">RearSprocket</ons-col>
           <ons-col>
-            <ons-range style="width: 100%;" min="65" max="95" ng-model="RearSprocket"></ons-range>
+            <ons-range style="width: 100%;" min="65" max="95" ng-model="RearSprocket" ng-change="app.rangeChange('RearSprocket',RearSprocket)"></ons-range>
           </ons-col>
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearSprocket}}
           </ons-col>
@@ -132,7 +171,7 @@
           </ons-col>
           <ons-col width="100px" style="text-align: left; line-height: 31px;">DriverFeeling</ons-col>
           <ons-col>
-            <ons-range style="width: 100%;" min="1" max="100" ng-model="DriverFeeling"></ons-range>
+            <ons-range style="width: 100%;" min="1" max="100" ng-model="DriverFeeling" ng-change="app.rangeChange('DriverFeeling',DriverFeeling)"></ons-range>
           </ons-col>
           <ons-col width="40px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-up"></ons-icon>
@@ -144,7 +183,9 @@
   </ons-template>
 
   <ons-template id="settings_view.html">
-    <ons-page>
+    <ons-page ng-init="PlugGap = obj[0].param ;ExhaustJoint = obj[1].param ;
+                    FrontSprocket = obj[2].param ;RearSprocket = obj[3].param ;
+                    DriverFeeling = obj[5].param ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -159,44 +200,11 @@
         <div id="info">
         <h4>EntryClass: <span id="EntryClass">Cadet &nbsp;</span>,   DryRain: <span id="DryRain">Dry &nbsp;</span></h4>
         <h4>Chassis: <span id="Chassis"> &nbsp;</span>,   Engine: <span id="Engine">&nbsp;</span></h4>
-        <h4>ExhaustJoint: <span id="PlugGap"> &nbsp;</span>,   Airboxes: <span id="Airboxes">&nbsp;</span></h4>
+        <h4>ExhaustJoint: <span id="ExhaustJoint"> &nbsp;</span>,   Airboxes: <span id="Airboxes">&nbsp;</span></h4>
         <h4>SparkPlugs: <span id="SparkPlugs"> &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
         <h4>FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
         <h4>FrontWheels: <span id="FrontWheels">&nbsp;</span>, RearWheels: <span id="RearWheels"></span></h4>
         <h4>FrontHubs: <span id="FrontHubs">&nbsp;</span>, RearHubs: <span id="RearHubs"></span></h4>
-        <ons-row>
-          <ons-col width="40px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="md-volume-down"></ons-icon>
-          </ons-col>
-          <ons-col>
-            <ons-range style="width: 90.9%;" min="50" max="120" ng-model="PlugGap"></ons-range>{{PlugGap}}
-          </ons-col>
-          <ons-col width="40px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="md-volume-up"></ons-icon>
-          </ons-col>
-        </ons-row>
-        <ons-row style="margin-top: 20px;">
-          <ons-col width="40px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear"></ons-icon>
-          </ons-col>
-          <ons-col>
-            <ons-range style="width: 90.9%;" min="7" max="25" ng-model="FrontSprocket"></ons-range>{{FrontSprocket}}
-          </ons-col>
-          <ons-col width="40px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="org_icon_plug.png"></ons-icon>
-          </ons-col>
-        </ons-row>
-        <ons-row style="margin-top: 20px;">
-          <ons-col width="40px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="md-thumb-down"></ons-icon>
-          </ons-col>
-          <ons-col>
-            <ons-range style="width: 90.9%;" min="65" max="95" ng-model="DriverFeeling"></ons-range>{{RearSprocket}}
-          </ons-col>
-          <ons-col width="40px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="md-thumb-up"></ons-icon>
-          </ons-col>
-        </ons-row>
         </div>
       </p>
     <script>console.log(document.getElementById("FrontSprocket").textContent);</script>
