@@ -107,7 +107,7 @@
   <ons-template id="settings_setting.html">
     <ons-page ng-init="PlugGap = obj[0].param ;ExhaustJoint = obj[1].param ;
                     FrontSprocket = obj[2].param ;RearSprocket = obj[3].param ;
-                    DriverFeeling = obj[5].param ">
+                    DriverFeeling = obj[4].param ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -185,7 +185,7 @@
   <ons-template id="settings_view.html">
     <ons-page ng-init="PlugGap = obj[0].param ;ExhaustJoint = obj[1].param ;
                     FrontSprocket = obj[2].param ;RearSprocket = obj[3].param ;
-                    DriverFeeling = obj[5].param ">
+                    DriverFeeling = obj[4].param ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -206,8 +206,19 @@
         <h4>FrontWheels: <span id="FrontWheels">&nbsp;</span>, RearWheels: <span id="RearWheels"></span></h4>
         <h4>FrontHubs: <span id="FrontHubs">&nbsp;</span>, RearHubs: <span id="RearHubs"></span></h4>
         </div>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="md-thumb-down"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">DriverFeeling</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="1" max="100" ng-model="DriverFeeling" ng-change="app.rangeChange('DriverFeeling',DriverFeeling)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="md-thumb-up"></ons-icon>
+          </ons-col>
+        </ons-row>
       </p>
-    <script>console.log(document.getElementById("FrontSprocket").textContent);</script>
     </ons-page>
   </ons-template>
   <ons-template id="data_save_load.html">
