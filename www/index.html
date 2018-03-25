@@ -38,15 +38,45 @@
         };
         
         this.selectChange = function(type,item){
-            console.log(type,$scope.selectChassis,item)
-            $scope.selectChassis = item
+            switch( type ) {
+                case 'EntryClass':
+                $scope.selectEntryClass = item;
+                console.log(type,$scope.selectEntryClass)
+                break;
+                case 'Chassi':
+                $scope.selectChassis = item;
+                console.log(type,$scope.selectChassis)
+                break;
+                case 'Engine':
+                $scope.selectEngine = item;
+                console.log(type,$scope.selectEngine)
+                break;
+                case 'SparkPlugs':
+                $scope.selectSparkPlugs = item;
+                console.log(type,$scope.selectSparkPlugs)
+                break;
+                case 'Airbox':
+                $scope.selectAirbox = item;
+                console.log(type,$scope.selectAirbox)
+                break;
+            }
         }
 //        $scope.obj = { type: 'PlugGap', param: '80'};
         $scope.obj = [ {"id":"0","type":"PlugGap", "param":"80"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
                      {"id":"2","type":"FrontSprocket", "param":"11"},{"id":"3","type":"RearSprocket", "param":"80"},
                      {"id":"4","type":"DriverFeeling", "param":"50"}];
-        $scope.ChassisData = ["Wildkart","Xenon","OTK","Birel","Energy","CROCPROMOTION","CRG","AMIGAO","REON"];
+        $scope.EntryClassData = ["キッズ","コマー","カデット","ジュニア","ローカルSS","ヤマハSS","スーパーSS","その他"];
+        $scope.selectEntryClass = null;
+        $scope.ChassisData = ["Wildkart","Xenon","OTK","Birel","Energy","CROCPROMOTION","CRG","AMIGAO","REON","その他"];
         $scope.selectChassis = null;
+        $scope.EngineData = ["EC04","Comer","MZ200","EX21","KX21","GX160","GX200","GX270","KT100SEC","KT100SD","X30","MicroMAX","MiniMAX","MAX","その他"];
+        $scope.selectEngine = null;
+        $scope.SparkPlugsData = ["R7435-8","R7435-9","R7435-10","R4304A-8","R4304A-9","R4304A-10","B8EGV","B9EGV","B10EGV",
+        "BPR8EIX","BPR9EIX","BPR10EIX","BR8EIX","BR9EIX","BR10EIX","IRITOP9","B9EG","R4118S-8","R4118S-9",
+        "IW01-27","IW01-29","IW01-31","IW01-32","その他"];
+        $scope.selectSparkPlugs = null;
+        $scope.AirboxData = ["KG SOCOREM","KG NITRO","KG APE-2","RR ASR-Paper","RR ASR-Sponge","RR ACTIVE","FL CIK10/18","その他"];
+        $scope.selectAirbox = null;
       });
 
     ons.ready(function() {
@@ -127,7 +157,13 @@
              <div id="message"></div>
           </div>
         </ons-toolbar>
+        <select ng-model="selectEntryClass" ng-options="EntryClass for EntryClass in EntryClassData" ng-change="app.selectChange('EntryClass',selectEntryClass)">
+            <option value="">選択してください</option>
+        </select>
         <select ng-model="selectChassis" ng-options="Chassis for Chassis in ChassisData" ng-change="app.selectChange('Chassi',selectChassis)">
+            <option value="">選択してください</option>
+        </select>
+        <select ng-model="selectEngine" ng-options="Engine for Engine in EngineData" ng-change="app.selectChange('Engine',selectEngine)">
             <option value="">選択してください</option>
         </select>
     </ons-page>
@@ -195,6 +231,16 @@
           </ons-col>
         </ons-row>
         <ons-row style="margin-top: 10px;">
+            <select ng-model="selectSparkPlugs" ng-options="SparkPlugs for SparkPlugs in SparkPlugsData" ng-change="app.selectChange('SparkPlugs',selectSparkPlugs)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+            <select ng-model="selectAirbox" ng-options="Airbox for Airbox in AirboxData" ng-change="app.selectChange('Airbox',selectAirbox)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-down"></ons-icon>
           </ons-col>
@@ -227,10 +273,10 @@
       </ons-toolbar>
       <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
         <div id="info">
-        <h4>EntryClass: <span id="EntryClass">Cadet &nbsp;</span>,   DryRain: <span id="DryRain">Dry &nbsp;</span></h4>
-        <h4>Chassis: <span id="Chassis"> &nbsp;</span>,   Engine: <span id="Engine">&nbsp;</span></h4>
-        <h4>ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">&nbsp;</span></h4>
-        <h4>SparkPlugs: <span id="SparkPlugs"> &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
+        <h4>EntryClass: <span id="EntryClass">{{selectEntryClass}} &nbsp;</span>,   DryRain: <span id="DryRain">Dry &nbsp;</span></h4>
+        <h4>Chassis: <span id="Chassis">{{selectChassis}} &nbsp;</span>,   Engine: <span id="Engine">{{selectEngine}}&nbsp;</span></h4>
+        <h4>ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">{{selectAirbox}}&nbsp;</span></h4>
+        <h4>SparkPlugs: <span id="SparkPlugs">{{selectSparkPlugs}} &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
         <h4>FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
         <h4>FrontWheels: <span id="FrontWheels">&nbsp;</span>, RearWheels: <span id="RearWheels"></span></h4>
         <h4>FrontHubs: <span id="FrontHubs">&nbsp;</span>, RearHubs: <span id="RearHubs"></span></h4>
