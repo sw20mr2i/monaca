@@ -36,10 +36,17 @@
             set_param($scope.obj,type,param)
             console.log(get_param($scope.obj,type))
         };
+        
+        this.selectChange = function(type,item){
+            console.log(type,$scope.selectChassis,item)
+            $scope.selectChassis = item
+        }
 //        $scope.obj = { type: 'PlugGap', param: '80'};
         $scope.obj = [ {"id":"0","type":"PlugGap", "param":"80"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
                      {"id":"2","type":"FrontSprocket", "param":"11"},{"id":"3","type":"RearSprocket", "param":"80"},
                      {"id":"4","type":"DriverFeeling", "param":"50"}];
+        $scope.ChassisData = ["Wildkart","Xenon","OTK","Birel","Energy","CROCPROMOTION","CRG","AMIGAO","REON"];
+        $scope.selectChassis = null;
       });
 
     ons.ready(function() {
@@ -66,6 +73,9 @@
         <ons-list>
           <ons-list-item ng-click="app.load('home.html')" tappable>
             スポンサーサイト
+          </ons-list-item>
+          <ons-list-item ng-click="app.load('settings_base.html')" tappable>
+            Settings base
           </ons-list-item>
           <ons-list-item ng-click="app.load('settings_setting.html')" tappable>
             Settings setting
@@ -104,6 +114,25 @@
       </p>
     </ons-page>
   </template>
+  <ons-template id="settings_base.html">
+    <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button ng-click="app.toggle()">
+                <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+          <div class="center">
+            ベースセッティング
+             <div id="message"></div>
+          </div>
+        </ons-toolbar>
+        <select ng-model="selectChassis" ng-options="Chassis for Chassis in ChassisData" ng-change="app.selectChange('Chassi',selectChassis)">
+            <option value="">選択してください</option>
+        </select>
+    </ons-page>
+  </ons-template>
+
   <ons-template id="settings_setting.html">
     <ons-page ng-init="PlugGap = obj[0].param ;ExhaustJoint = obj[1].param ;
                     FrontSprocket = obj[2].param ;RearSprocket = obj[3].param ;
@@ -200,7 +229,7 @@
         <div id="info">
         <h4>EntryClass: <span id="EntryClass">Cadet &nbsp;</span>,   DryRain: <span id="DryRain">Dry &nbsp;</span></h4>
         <h4>Chassis: <span id="Chassis"> &nbsp;</span>,   Engine: <span id="Engine">&nbsp;</span></h4>
-        <h4>ExhaustJoint: <span id="ExhaustJoint"> &nbsp;</span>,   Airboxes: <span id="Airboxes">&nbsp;</span></h4>
+        <h4>ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">&nbsp;</span></h4>
         <h4>SparkPlugs: <span id="SparkPlugs"> &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
         <h4>FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
         <h4>FrontWheels: <span id="FrontWheels">&nbsp;</span>, RearWheels: <span id="RearWheels"></span></h4>
