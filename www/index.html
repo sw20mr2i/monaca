@@ -59,12 +59,34 @@
                 $scope.selectAirbox = item;
                 console.log(type,$scope.selectAirbox)
                 break;
+                case 'FrontWheels':
+                $scope.selectFrontWheels = item;
+                console.log(type,$scope.selectFrontWheels)
+                break;
+                case 'RearWheels':
+                $scope.selectRearWheels = item;
+                console.log(type,$scope.selectRearWheels)
+                break;
+                case 'FrontHubs':
+                $scope.selectFrontHubs = item;
+                console.log(type,$scope.selectFrontHubs)
+                break;
+                case 'RearHubs':
+                $scope.selectRearHubs = item;
+                console.log(type,$scope.selectRearHubs)
+                break;
             }
         }
+
 //        $scope.obj = { type: 'PlugGap', param: '80'};
         $scope.obj = [ {"id":"0","type":"PlugGap", "param":"80"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
                      {"id":"2","type":"FrontSprocket", "param":"11"},{"id":"3","type":"RearSprocket", "param":"80"},
-                     {"id":"4","type":"DriverFeeling", "param":"50"}];
+                     {"id":"4","type":"FrontColdAirPressure", "param":"50"},{"id":"5","type":"RearColdAirPressure", "param":"80"},
+                     {"id":"6","type":"FrontHotAirPressure", "param":"50"},{"id":"7","type":"RearHotAirPressure", "param":"80"},
+                     {"id":"8","type":"FrontTread", "param":"50"},{"id":"9","type":"RearTread", "param":"80"},
+                     {"id":"10","type":"HandlingFeeling", "param":"50"},{"id":"11","type":"EngineFeeling", "param":"80"},
+                     {"id":"11","type":"CarburetorLow", "param":"50"},{"id":"12","type":"CarburetorHi", "param":"80"}
+                     ];
         $scope.EntryClassData = ["キッズ","コマー","カデット","ジュニア","ローカルSS","ヤマハSS","スーパーSS","その他"];
         $scope.selectEntryClass = null;
         $scope.ChassisData = ["Wildkart","Xenon","OTK","Birel","Energy","CROCPROMOTION","CRG","AMIGAO","REON","その他"];
@@ -77,7 +99,40 @@
         $scope.selectSparkPlugs = null;
         $scope.AirboxData = ["KG SOCOREM","KG NITRO","KG APE-2","RR ASR-Paper","RR ASR-Sponge","RR ACTIVE","FL CIK10/18","その他"];
         $scope.selectAirbox = null;
+        $scope.FrontWheelsData = ["MXP","MXJ","MXC","MXL","KK","DWT","FREE LINE","その他"];
+        $scope.selectFrontWheels = null;
+        $scope.RearWheelsData = ["MXP","MXJ","MXC","MXL","KK","DWT","FREE LINE","その他"];
+        $scope.selectRearWheels = null;
+        $scope.FrontHubsData = ["Nomal","Option","TripleK","その他"];
+        $scope.selectFrontHubs = null;
+        $scope.RearHubsData = ["Nomal","Option","TripleK","その他"];
+        $scope.selectRearHubs = null;
       });
+    // device APIs are available
+    //
+    function onDeviceReady() {
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    }
+
+    // onSuccess Geolocation
+    //
+    function onSuccess(position) {
+            alert('Latitude: '          + position.coords.latitude          + '\n' +
+          'Longitude: '         + position.coords.longitude         + '\n' +
+          'Altitude: '          + position.coords.altitude          + '\n' +
+          'Accuracy: '          + position.coords.accuracy          + '\n' +
+          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+          'Heading: '           + position.coords.heading           + '\n' +
+          'Speed: '             + position.coords.speed             + '\n' +
+          'Timestamp: '         + position.timestamp                + '\n');
+    }
+
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
 
     ons.ready(function() {
 //        paramData =[ {"type":"PlugGap", "param":"80"}, {"type":"ExhaustJoint", "param":"60"},
@@ -88,6 +143,7 @@
 //        monaca.getDeviceId(function(idid){
 //                    alert('Device ID: ' + idid);
 //                });
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
         var date = (new Date()).toString()
         console.log(date)
 //        PlugGap = get_param(paramData,'PlugGap')
@@ -172,7 +228,11 @@
   <ons-template id="settings_setting.html">
     <ons-page ng-init="PlugGap = obj[0].param ;ExhaustJoint = obj[1].param ;
                     FrontSprocket = obj[2].param ;RearSprocket = obj[3].param ;
-                    DriverFeeling = obj[4].param ">
+                    FrontColdAirPressure = obj[4].param ;RearColdAirPressure = obj[5].param ;
+                    FrontHotAirPressure = obj[6].param ;RearHotAirPressure = obj[7].param ;
+                    FrontTread = obj[8].param ;RearTread = obj[9].param ;
+                    HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
+                    CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -208,6 +268,29 @@
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{ExhaustJoint}}
           </ons-col>
         </ons-row>
+        <ons-row>
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-code-download"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">CarburetorLow</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="0" max="180" ng-model="CarburetorLow" ng-change="app.rangeChange('CarburetorLow',CarburetorLow)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{CarburetorLow}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+        <ons-row>
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-android-phone-landscape"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">CarburetorHi</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="0" max="60" ng-model="CarburetorHi" ng-change="app.rangeChange('CarburetorHi',CarburetorHi)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{CarburetorHi}}
+          </ons-col>
+        </ons-row>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
@@ -230,6 +313,76 @@
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearSprocket}}
           </ons-col>
         </ons-row>
+        
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontColdAirPressure</ons-col>
+          <ons-col style="text-align: center; line-height: 31px;">
+            <ons-range style="width: 100%;" min="1" max="300" ng-model="FrontColdAirPressure" ng-change="app.rangeChange('FrontColdAirPressure',FrontColdAirPressure)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{FrontColdAirPressure}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-gear"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">RearColdAirPressure</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="1" max="300" ng-model="RearColdAirPressure" ng-change="app.rangeChange('RearColdAirPressure',RearColdAirPressure)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearColdAirPressure}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontHotAirPressure</ons-col>
+          <ons-col style="text-align: center; line-height: 31px;">
+            <ons-range style="width: 100%;" min="1" max="300" ng-model="FrontHotAirPressure" ng-change="app.rangeChange('FrontHotAirPressure',FrontHotAirPressure)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{FrontHotAirPressure}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-gear"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">RearHotAirPressure</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="1" max="300" ng-model="RearHotAirPressure" ng-change="app.rangeChange('RearHotAirPressure',RearHotAirPressure)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearHotAirPressure}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontTread</ons-col>
+          <ons-col style="text-align: center; line-height: 31px;">
+            <ons-range style="width: 100%;" min="0" max="500" ng-model="FrontTread" ng-change="app.rangeChange('FrontTread',FrontTread)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{FrontTread}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-gear"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">RearTread</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="0" max="500" ng-model="RearTread" ng-change="app.rangeChange('RearTread',RearTread)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearTread}}
+          </ons-col>
+        </ons-row>
+
+        
+        
         <ons-row style="margin-top: 10px;">
             <select ng-model="selectSparkPlugs" ng-options="SparkPlugs for SparkPlugs in SparkPlugsData" ng-change="app.selectChange('SparkPlugs',selectSparkPlugs)">
                 <option value="">選択してください</option>
@@ -241,12 +394,44 @@
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
+            <select ng-model="selectFrontWheels" ng-options="FrontWheels for FrontWheels in FrontWheelsData" ng-change="app.selectChange('FrontWheels',selectFrontWheels)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+            <select ng-model="selectRearWheels" ng-options="RearWheels for RearWheels in RearWheelsData" ng-change="app.selectChange('RearWheels',selectRearWheels)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+            <select ng-model="selectFrontHubs" ng-options="FrontHubs for FrontHubs in FrontHubsData" ng-change="app.selectChange('FrontHubs',selectFrontHubs)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+            <select ng-model="selectRearHubs" ng-options="RearHubs for RearHubs in RearHubsData" ng-change="app.selectChange('RearHubs',selectRearHubs)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-down"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">DriverFeeling</ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">HandlingFeeling</ons-col>
           <ons-col>
-            <ons-range style="width: 100%;" min="1" max="100" ng-model="DriverFeeling" ng-change="app.rangeChange('DriverFeeling',DriverFeeling)"></ons-range>
+            <ons-range style="width: 100%;" min="1" max="100" ng-model="HandlingFeeling" ng-change="app.rangeChange('HandlingFeeling',HandlingFeeling)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="md-thumb-up"></ons-icon>
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="md-thumb-down"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">EngineFeeling</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="1" max="100" ng-model="EngineFeeling" ng-change="app.rangeChange('EngineFeeling',EngineFeeling)"></ons-range>
           </ons-col>
           <ons-col width="40px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-up"></ons-icon>
@@ -260,7 +445,11 @@
   <ons-template id="settings_view.html">
     <ons-page ng-init="PlugGap = obj[0].param ;ExhaustJoint = obj[1].param ;
                     FrontSprocket = obj[2].param ;RearSprocket = obj[3].param ;
-                    DriverFeeling = obj[4].param ">
+                    FrontColdAirPressure = obj[4].param ;RearColdAirPressure = obj[5].param ;
+                    FrontHotAirPressure = obj[6].param ;RearHotAirPressure = obj[7].param ;
+                    FrontTread = obj[8].param ;RearTread = obj[9].param ;
+                    HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
+                    CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -277,17 +466,33 @@
         <h4>Chassis: <span id="Chassis">{{selectChassis}} &nbsp;</span>,   Engine: <span id="Engine">{{selectEngine}}&nbsp;</span></h4>
         <h4>ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">{{selectAirbox}}&nbsp;</span></h4>
         <h4>SparkPlugs: <span id="SparkPlugs">{{selectSparkPlugs}} &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
+        <h4>CarburetorLow: <span id="CarburetorLow">{{CarburetorLow}} &nbsp;</span>,   CarburetorHi: <span id="CarburetorHi">{{CarburetorHi}}&nbsp;</span></h4>
         <h4>FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
-        <h4>FrontWheels: <span id="FrontWheels">&nbsp;</span>, RearWheels: <span id="RearWheels"></span></h4>
-        <h4>FrontHubs: <span id="FrontHubs">&nbsp;</span>, RearHubs: <span id="RearHubs"></span></h4>
+        <h4>FrontWheels: <span id="FrontWheels">{{selectFrontWheels}}&nbsp;</span>, RearWheels: <span id="RearWheels">{{selectRearWheels}}&nbsp;</span></h4>
+        <h4>FrontHubs: <span id="FrontHubs">{{selectFrontHubs}}&nbsp;</span>, RearHubs: <span id="RearHubs">{{selectRearHubs}}&nbsp;</span></h4>     
+        <h4>FrontColdAirPressure: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAirPressure: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
+        <h4>FrontHotAirPressure: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAirPressure: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
+        <h4>FrontTread: <span id="FrontTread">{{FrontTread}}&nbsp;</span>, RearTread: <span id="RearTread">{{RearTread}}&nbsp;</span></h4>
         </div>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-down"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">DriverFeeling</ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">HandlingFeeling</ons-col>
           <ons-col>
-            <ons-range style="width: 100%;" min="1" max="100" ng-model="DriverFeeling" ng-change="app.rangeChange('DriverFeeling',DriverFeeling)"></ons-range>
+            <ons-range style="width: 100%;" min="1" max="100" ng-model="HandlingFeeling" ng-change="app.rangeChange('HandlingFeeling',HandlingFeeling)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="md-thumb-up"></ons-icon>
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="md-thumb-down"></ons-icon>
+          </ons-col>
+          <ons-col width="100px" style="text-align: left; line-height: 31px;">EngineFeeling</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="1" max="100" ng-model="EngineFeeling" ng-change="app.rangeChange('EngineFeeling',EngineFeeling)"></ons-range>
           </ons-col>
           <ons-col width="40px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-up"></ons-icon>

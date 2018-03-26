@@ -26,8 +26,26 @@ function set_param(obj,type,param){
         obj[2].param = param;
     }else if(type=='RearSprocket'){
         obj[3].param = param;
-    }else if(type=='DriverFeeling'){
+    }else if(type=='FrontColdAirPressure'){
         obj[4].param = param;
+    }else if(type=='RearColdAirPressure'){
+        obj[5].param = param;
+    }else if(type=='FrontHotAirPressure'){
+        obj[6].param = param;
+    }else if(type=='RearHotAirPressure'){
+        obj[7].param = param;
+    }else if(type=='FrontTread'){
+        obj[8].param = param;
+    }else if(type=='RearTread'){
+        obj[9].param = param;
+    }else if(type=='HandlingFeeling'){
+        obj[10].param = param;
+    }else if(type=='EngineFeeling'){
+        obj[11].param = param;
+    }else if(type=='CarburetorLow'){
+        obj[12].param = param;
+    }else if(type=='CarburetorHi'){
+        obj[13].param = param;
     }
 };
 function get_param(obj,type){
