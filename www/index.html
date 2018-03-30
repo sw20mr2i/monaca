@@ -79,6 +79,11 @@
         }
 
 //        $scope.obj = { type: 'PlugGap', param: '80'};
+        $scope.Circuit = [ {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
+                           {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
+                           {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"},
+                           {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"}
+                         ];
         $scope.obj = [ {"id":"0","type":"PlugGap", "param":"80"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
                      {"id":"2","type":"FrontSprocket", "param":"11"},{"id":"3","type":"RearSprocket", "param":"80"},
                      {"id":"4","type":"FrontColdAirPressure", "param":"50"},{"id":"5","type":"RearColdAirPressure", "param":"80"},
@@ -117,13 +122,16 @@
     // onSuccess Geolocation
     //
     function onSuccess(position) {
-            alert('Latitude: '          + position.coords.latitude          + '\n' +
+        var d = getDistance(position.coords.latitude,position.coords.longitude,Circuit[0].lat,Circuit[0].lon)
+        alert('Latitude: '      + position.coords.latitude          + '\n' +
           'Longitude: '         + position.coords.longitude         + '\n' +
           'Altitude: '          + position.coords.altitude          + '\n' +
           'Accuracy: '          + position.coords.accuracy          + '\n' +
           'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
           'Heading: '           + position.coords.heading           + '\n' +
           'Speed: '             + position.coords.speed             + '\n' +
+          'Akigase ditance: '           + d.distance             + '\n' +
+          'Akigase ditance unit: '    + d.distance_unit         + '\n' +
           'Timestamp: '         + position.timestamp                + '\n');
     }
 
@@ -135,6 +143,11 @@
     }
 
     ons.ready(function() {
+        Circuit = [ {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
+                           {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
+                           {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"},
+                           {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"}
+                         ];
 //        paramData =[ {"type":"PlugGap", "param":"80"}, {"type":"ExhaustJoint", "param":"60"},
 //                             {"type":"FrontSprocket", "param":"11"},{"type":"RearSprocket", "param":"80"},
 //                             {"type":"DriverFeeling", "param":"50"}];
@@ -213,15 +226,17 @@
              <div id="message"></div>
           </div>
         </ons-toolbar>
-        <select ng-model="selectEntryClass" ng-options="EntryClass for EntryClass in EntryClassData" ng-change="app.selectChange('EntryClass',selectEntryClass)">
-            <option value="">選択してください</option>
+        EntryClass : <select ng-model="selectEntryClass" ng-options="EntryClass for EntryClass in EntryClassData" ng-change="app.selectChange('EntryClass',selectEntryClass)">
+            <option value="">選択してください</option>&nbsp;
         </select>
-        <select ng-model="selectChassis" ng-options="Chassis for Chassis in ChassisData" ng-change="app.selectChange('Chassi',selectChassis)">
-            <option value="">選択してください</option>
+        Chassi : <select ng-model="selectChassis" ng-options="Chassis for Chassis in ChassisData" ng-change="app.selectChange('Chassi',selectChassis)">
+            <option value="">選択してください</option>&nbsp;
         </select>
-        <select ng-model="selectEngine" ng-options="Engine for Engine in EngineData" ng-change="app.selectChange('Engine',selectEngine)">
-            <option value="">選択してください</option>
+        Engine : <select ng-model="selectEngine" ng-options="Engine for Engine in EngineData" ng-change="app.selectChange('Engine',selectEngine)">
+            <option value="">選択してください</option>&nbsp;
         </select>
+        Near Circuit : CircuitAkigase&nbsp;
+        <p><img src="circuitimage/CircuitAkigase.gif" alt="circuitimage" width="300" height="200"></p>
     </ons-page>
   </ons-template>
 
@@ -384,32 +399,32 @@
         
         
         <ons-row style="margin-top: 10px;">
-            <select ng-model="selectSparkPlugs" ng-options="SparkPlugs for SparkPlugs in SparkPlugsData" ng-change="app.selectChange('SparkPlugs',selectSparkPlugs)">
+            SparkPlugs<select ng-model="selectSparkPlugs" ng-options="SparkPlugs for SparkPlugs in SparkPlugsData" ng-change="app.selectChange('SparkPlugs',selectSparkPlugs)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            <select ng-model="selectAirbox" ng-options="Airbox for Airbox in AirboxData" ng-change="app.selectChange('Airbox',selectAirbox)">
+            Airbox<select ng-model="selectAirbox" ng-options="Airbox for Airbox in AirboxData" ng-change="app.selectChange('Airbox',selectAirbox)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            <select ng-model="selectFrontWheels" ng-options="FrontWheels for FrontWheels in FrontWheelsData" ng-change="app.selectChange('FrontWheels',selectFrontWheels)">
+            FrontWheels<select ng-model="selectFrontWheels" ng-options="FrontWheels for FrontWheels in FrontWheelsData" ng-change="app.selectChange('FrontWheels',selectFrontWheels)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            <select ng-model="selectRearWheels" ng-options="RearWheels for RearWheels in RearWheelsData" ng-change="app.selectChange('RearWheels',selectRearWheels)">
+            RearWheels<select ng-model="selectRearWheels" ng-options="RearWheels for RearWheels in RearWheelsData" ng-change="app.selectChange('RearWheels',selectRearWheels)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            <select ng-model="selectFrontHubs" ng-options="FrontHubs for FrontHubs in FrontHubsData" ng-change="app.selectChange('FrontHubs',selectFrontHubs)">
+            FrontHubs<select ng-model="selectFrontHubs" ng-options="FrontHubs for FrontHubs in FrontHubsData" ng-change="app.selectChange('FrontHubs',selectFrontHubs)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            <select ng-model="selectRearHubs" ng-options="RearHubs for RearHubs in RearHubsData" ng-change="app.selectChange('RearHubs',selectRearHubs)">
+            RearHubs<select ng-model="selectRearHubs" ng-options="RearHubs for RearHubs in RearHubsData" ng-change="app.selectChange('RearHubs',selectRearHubs)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
