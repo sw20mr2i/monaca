@@ -19,22 +19,44 @@
   <script>
 //    param_obj =new new_param();
 //    console.log(param_obj)
-
+    gnearnum = -1;
+    glat = 0;
+    glon = 0;
     ons.bootstrap()
       .controller('AppController', function($scope) {
         this.load = function(page) {
           $scope.splitter.content.load(page);
           $scope.splitter.left.close();
+          $scope.sCircuit = Circuit;
+          $scope.sCircuitNum = gnearnum;
+          $scope.sCircuitName = Circuit[gnearnum].Circuit;
+          $scope.sCircuitUrl = Circuit[gnearnum].shape;
         };
 
         this.toggle = function() {
           $scope.splitter.left.toggle();
+//          $scope.sCircuitgnearnum = gnearnum;
+//          $scope.sCircuitglat = glat;
+//          $scope.sCircuitglon = glon;
         };
         
         this.rangeChange = function(type,param) {
             //set_param(param_obj,type,param)
             set_param($scope.obj,type,param)
             console.log(get_param($scope.obj,type))
+        };
+        
+        this.saveloadDataLocal = function(saveload){
+            console.log( saveload )
+            if(saveload=='save'){
+            console.log( $scope.obj[0].param )
+                localStorage.setItem('key' ,$scope.obj[0].param);
+            }else if(saveload=='saveas'){
+                localStorage.setItem('key' ,$scope.obj[0].param);
+            }else{
+                $scope.obj[0].param = localStorage.getItem('key');
+            console.log( $scope.obj[0].param )
+            }
         };
         
         this.selectChange = function(type,item){
@@ -79,18 +101,18 @@
         }
 
 //        $scope.obj = { type: 'PlugGap', param: '80'};
-        $scope.Circuit = [ {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
-                           {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
-                           {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"},
-                           {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"}
-                         ];
+//        $scope.Circuit = [ {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
+//                           {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
+//                           {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"},
+//                           {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"}
+//                         ];
         $scope.obj = [ {"id":"0","type":"PlugGap", "param":"80"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
                      {"id":"2","type":"FrontSprocket", "param":"11"},{"id":"3","type":"RearSprocket", "param":"80"},
                      {"id":"4","type":"FrontColdAirPressure", "param":"50"},{"id":"5","type":"RearColdAirPressure", "param":"80"},
                      {"id":"6","type":"FrontHotAirPressure", "param":"50"},{"id":"7","type":"RearHotAirPressure", "param":"80"},
                      {"id":"8","type":"FrontTread", "param":"50"},{"id":"9","type":"RearTread", "param":"80"},
                      {"id":"10","type":"HandlingFeeling", "param":"50"},{"id":"11","type":"EngineFeeling", "param":"80"},
-                     {"id":"11","type":"CarburetorLow", "param":"50"},{"id":"12","type":"CarburetorHi", "param":"80"}
+                     {"id":"12","type":"CarburetorLow", "param":"50"},{"id":"13","type":"CarburetorHi", "param":"80"}
                      ];
         $scope.EntryClassData = ["キッズ","コマー","カデット","ジュニア","ローカルSS","ヤマハSS","スーパーSS","その他"];
         $scope.selectEntryClass = null;
@@ -122,7 +144,12 @@
     // onSuccess Geolocation
     //
     function onSuccess(position) {
-        var d = getDistance(position.coords.latitude,position.coords.longitude,Circuit[0].lat,Circuit[0].lon)
+        gnearnum =  getNearCircuit(position.coords.latitude,position.coords.longitude,Circuit)
+        var d = getDistance(position.coords.latitude,position.coords.longitude,Circuit[gnearnum].lat,Circuit[gnearnum].lon)
+        gCircuit = Circuit[gnearnum].Circuit
+        glat = position.coords.latitude
+        glon = position.coords.longitude
+        console.log(gCircuit);
         alert('Latitude: '      + position.coords.latitude          + '\n' +
           'Longitude: '         + position.coords.longitude         + '\n' +
           'Altitude: '          + position.coords.altitude          + '\n' +
@@ -130,8 +157,10 @@
           'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
           'Heading: '           + position.coords.heading           + '\n' +
           'Speed: '             + position.coords.speed             + '\n' +
-          'Akigase ditance: '           + d.distance             + '\n' +
-          'Akigase ditance unit: '    + d.distance_unit         + '\n' +
+          'Near Circuit : '           + Circuit[gnearnum].Circuit             + '\n' +
+          'Near Circuit  unit: '    + d.distance_unit         + '\n' +
+          'Circuit num: '    + Circuit.length         + '\n' +
+          'neari: '    + gnearnum         + '\n' +
           'Timestamp: '         + position.timestamp                + '\n');
     }
 
@@ -143,10 +172,10 @@
     }
 
     ons.ready(function() {
-        Circuit = [ {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
-                           {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
-                           {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"},
-                           {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"}
+        Circuit = [ {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"},
+                    {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
+                    {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
+                    {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"}
                          ];
 //        paramData =[ {"type":"PlugGap", "param":"80"}, {"type":"ExhaustJoint", "param":"60"},
 //                             {"type":"FrontSprocket", "param":"11"},{"type":"RearSprocket", "param":"80"},
@@ -214,7 +243,7 @@
     </ons-page>
   </template>
   <ons-template id="settings_base.html">
-    <ons-page>
+    <ons-page ng-init="NearCircuit = gCircuit ;">
         <ons-toolbar>
           <div class="left">
             <ons-toolbar-button ng-click="app.toggle()">
@@ -228,15 +257,15 @@
         </ons-toolbar>
         EntryClass : <select ng-model="selectEntryClass" ng-options="EntryClass for EntryClass in EntryClassData" ng-change="app.selectChange('EntryClass',selectEntryClass)">
             <option value="">選択してください</option>&nbsp;
-        </select>
+        </select><br>
         Chassi : <select ng-model="selectChassis" ng-options="Chassis for Chassis in ChassisData" ng-change="app.selectChange('Chassi',selectChassis)">
             <option value="">選択してください</option>&nbsp;
-        </select>
+        </select><br>
         Engine : <select ng-model="selectEngine" ng-options="Engine for Engine in EngineData" ng-change="app.selectChange('Engine',selectEngine)">
             <option value="">選択してください</option>&nbsp;
-        </select>
-        Near Circuit : CircuitAkigase&nbsp;
-        <p><img src="circuitimage/CircuitAkigase.gif" alt="circuitimage" width="300" height="200"></p>
+        </select><br>
+        Near Circuit : {{sCircuitName}}&nbsp;
+        <p><img src="circuitimage/CircuitAkigase.gif" alt="circuitimage" width="100%"></p>
     </ons-page>
   </ons-template>
 
@@ -264,7 +293,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-code-download"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">PlugGap</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">PlugGap</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="50" max="120" ng-model="PlugGap" ng-change="app.rangeChange('PlugGap',PlugGap)"></ons-range>
           </ons-col>
@@ -276,7 +305,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-android-phone-landscape"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">ExhaustJoint</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">ExhaustJoint</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="40" max="180" ng-model="ExhaustJoint" ng-change="app.rangeChange('ExhaustJoint',ExhaustJoint)"></ons-range>
           </ons-col>
@@ -287,7 +316,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-code-download"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">CarburetorLow</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">CarburetorLow</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="0" max="180" ng-model="CarburetorLow" ng-change="app.rangeChange('CarburetorLow',CarburetorLow)"></ons-range>
           </ons-col>
@@ -299,7 +328,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-android-phone-landscape"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">CarburetorHi</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">CarburetorHi</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="0" max="60" ng-model="CarburetorHi" ng-change="app.rangeChange('CarburetorHi',CarburetorHi)"></ons-range>
           </ons-col>
@@ -310,7 +339,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontSprocket</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontSprocket</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
             <ons-range style="width: 100%;" min="7" max="25" ng-model="FrontSprocket" ng-change="app.rangeChange('FrontSprocket',FrontSprocket)"></ons-range>
           </ons-col>
@@ -321,7 +350,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">RearSprocket</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">RearSprocket</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="65" max="95" ng-model="RearSprocket" ng-change="app.rangeChange('RearSprocket',RearSprocket)"></ons-range>
           </ons-col>
@@ -333,7 +362,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontColdAirPressure</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontColdAir</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
             <ons-range style="width: 100%;" min="1" max="300" ng-model="FrontColdAirPressure" ng-change="app.rangeChange('FrontColdAirPressure',FrontColdAirPressure)"></ons-range>
           </ons-col>
@@ -344,7 +373,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">RearColdAirPressure</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">RearColdAir</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="1" max="300" ng-model="RearColdAirPressure" ng-change="app.rangeChange('RearColdAirPressure',RearColdAirPressure)"></ons-range>
           </ons-col>
@@ -355,7 +384,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontHotAirPressure</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontHotAir</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
             <ons-range style="width: 100%;" min="1" max="300" ng-model="FrontHotAirPressure" ng-change="app.rangeChange('FrontHotAirPressure',FrontHotAirPressure)"></ons-range>
           </ons-col>
@@ -366,7 +395,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">RearHotAirPressure</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">RearHotAir</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="1" max="300" ng-model="RearHotAirPressure" ng-change="app.rangeChange('RearHotAirPressure',RearHotAirPressure)"></ons-range>
           </ons-col>
@@ -377,7 +406,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">FrontTread</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontTread</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
             <ons-range style="width: 100%;" min="0" max="500" ng-model="FrontTread" ng-change="app.rangeChange('FrontTread',FrontTread)"></ons-range>
           </ons-col>
@@ -388,7 +417,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-gear"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">RearTread</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">RearTread</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="0" max="500" ng-model="RearTread" ng-change="app.rangeChange('RearTread',RearTread)"></ons-range>
           </ons-col>
@@ -432,7 +461,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-down"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">HandlingFeeling</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">HandlingFeeling</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="1" max="100" ng-model="HandlingFeeling" ng-change="app.rangeChange('HandlingFeeling',HandlingFeeling)"></ons-range>
           </ons-col>
@@ -444,7 +473,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-down"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">EngineFeeling</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">EngineFeeling</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="1" max="100" ng-model="EngineFeeling" ng-change="app.rangeChange('EngineFeeling',EngineFeeling)"></ons-range>
           </ons-col>
@@ -485,15 +514,15 @@
         <h4>FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
         <h4>FrontWheels: <span id="FrontWheels">{{selectFrontWheels}}&nbsp;</span>, RearWheels: <span id="RearWheels">{{selectRearWheels}}&nbsp;</span></h4>
         <h4>FrontHubs: <span id="FrontHubs">{{selectFrontHubs}}&nbsp;</span>, RearHubs: <span id="RearHubs">{{selectRearHubs}}&nbsp;</span></h4>     
-        <h4>FrontColdAirPressure: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAirPressure: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
-        <h4>FrontHotAirPressure: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAirPressure: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
+        <h4>FrontColdAir: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAir: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
+        <h4>FrontHotAir: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAir: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
         <h4>FrontTread: <span id="FrontTread">{{FrontTread}}&nbsp;</span>, RearTread: <span id="RearTread">{{RearTread}}&nbsp;</span></h4>
         </div>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-down"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">HandlingFeeling</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">HandlingFeeling</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="1" max="100" ng-model="HandlingFeeling" ng-change="app.rangeChange('HandlingFeeling',HandlingFeeling)"></ons-range>
           </ons-col>
@@ -505,7 +534,7 @@
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="md-thumb-down"></ons-icon>
           </ons-col>
-          <ons-col width="100px" style="text-align: left; line-height: 31px;">EngineFeeling</ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">EngineFeeling</ons-col>
           <ons-col>
             <ons-range style="width: 100%;" min="1" max="100" ng-model="EngineFeeling" ng-change="app.rangeChange('EngineFeeling',EngineFeeling)"></ons-range>
           </ons-col>
@@ -529,11 +558,14 @@
              <div id="message"></div>
           </div>
         </ons-toolbar>
-        <ons-button onclick="saveData()">
-            データセーブ
+        <ons-button ng-click="app.saveloadDataLocal('save')">
+            データ更新
         </ons-button>
-        <ons-button onclick="saveLoad()">
-            データロード
+        <ons-button ng-click="app.saveloadDataLocal('saveas')">
+            データ保存
+        </ons-button>
+        <ons-button ng-click="app.saveloadDataLocal('load')">
+            データ読み出し
         </ons-button>
     </ons-page>
   </ons-template>

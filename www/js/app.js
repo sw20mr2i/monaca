@@ -59,6 +59,26 @@ function get_param(obj,type){
         param = obj[3].param;
     }else if(type=='DriverFeeling'){
         param = obj[4].param;
+    }else if(type=='FrontColdAirPressure'){
+        param = obj[4].param;
+    }else if(type=='RearColdAirPressure'){
+        param = obj[5].param;
+    }else if(type=='FrontHotAirPressure'){
+        param = obj[6].param;
+    }else if(type=='RearHotAirPressure'){
+        param = obj[7].param;
+    }else if(type=='FrontTread'){
+        param = obj[8].param;
+    }else if(type=='RearTread'){
+        param = obj[9].param;
+    }else if(type=='HandlingFeeling'){
+        param = obj[10].param;
+    }else if(type=='EngineFeeling'){
+        param = obj[11].param;
+    }else if(type=='CarburetorLow'){
+        param = obj[12].param;
+    }else if(type=='CarburetorHi'){
+        param = obj[13].param;
     }
     return param;
 };
@@ -94,7 +114,20 @@ return {
 "distance_unit": distance_unit
 };
 }
-
+function getNearCircuit(lat1, lng1, CircuitList) {
+    var near=50000;
+    var nearnum=-1;
+    var count = 0;
+    for(var i=0; i< CircuitList.length; i++){
+        tmpnear = getDistance(lat1, lng1, CircuitList[i].lat,Circuit[i].lon)
+        if(near>tmpnear.distance){
+            near=tmpnear.distance
+            nearnum=i
+            count = count++;
+        }
+    }
+    return nearnum
+}
 //function set_param(obj,type,param){
 //    if(type=='PlugGap'){
 //        obj.PlugGap = param;
