@@ -23,7 +23,27 @@
     glat = 0;
     glon = 0;
     ons.bootstrap()
-      .controller('AppController', function($scope) {
+        .controller('AppController',function($scope,$http){
+        var config = { 
+          params: { lat:'35.8603361', 
+                    lon:'139.5921962',
+                    units:'metric',
+                    APIKEY:'2e950c461075a5b6903bdf443a8c1072'
+              } 
+        };
+        $http.get("http://api.openweathermap.org/data/2.5/weather",config)    
+          .then(successCallback, errorCallback);
+            function successCallback(response){
+                //success code
+//                $scope.weather = response.weather[0].main;
+//                $scope.description = response.weather[0].description;
+//                $scope.icon = response.weather[0].icon;
+                console.log(response); 
+            }
+            function errorCallback(error){
+                //error code
+                alert('天気情報の取得に失敗しました'); 
+            }
         this.load = function(page) {
           $scope.splitter.content.load(page);
           $scope.splitter.left.close();
