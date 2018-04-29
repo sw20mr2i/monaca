@@ -24,9 +24,10 @@
     glon = 0;
     ons.bootstrap()
         .controller('AppController',function($scope,$http){
-        var config = { 
-          params: { lat:'35.8603361', 
-                    lon:'139.5921962',
+        this.load = function(page) {
+         var config = { 
+          params: { lat:Circuit[gnearnum].lat, 
+                    lon:Circuit[gnearnum].lon,
                     units:'metric',
                     APIKEY:'2e950c461075a5b6903bdf443a8c1072'
               } 
@@ -34,34 +35,42 @@
         $http.get("http://api.openweathermap.org/data/2.5/weather",config)    
           .then(successCallback, errorCallback);
             function successCallback(response){
-                //success code
-//                $scope.weather = response.weather[0].main;
-//                $scope.description = response.weather[0].description;
-//                $scope.icon = response.weather[0].icon;
-                console.log(response); 
+                console.log("-----------------------");
+                $scope.weather_weather = response.data.weather[0].main;
+                $scope.weather_description = response.data.weather[0].description;
+                $scope.weather_gettimedt = response.data.dt;
+                $scope.weather_gettime = new Date(response.data.dt*1000).toLocaleString();
+                $scope.weather_temp = response.data.main.temp;
+                $scope.weather_pressure = response.data.main.pressure;
+                $scope.weather_humidity = response.data.main.humidity;
+                $scope.weather_windspeed = response.data.wind.speed;
+                $scope.weather_winddeg = response.data.wind.deg;
+                $scope.weather_area = response.data.name;
+                console.log($scope.weather_weather,$scope.weather_description,$scope.weather_gettime,
+                                 $scope.weather_temp,$scope.weather_pressure,$scope.weather_humidity,
+                                 $scope.weather_windspeed,$scope.weather_winddeg,$scope.weather_area); 
             }
             function errorCallback(error){
                 //error code
                 alert('天気情報の取得に失敗しました'); 
             }
-        this.load = function(page) {
-          $scope.splitter.content.load(page);
-          $scope.splitter.left.close();
-          $scope.sCircuit = Circuit;
+         $scope.splitter.content.load(page);
+             $scope.splitter.left.close();
           $scope.sCircuitNum = gnearnum;
           $scope.sCircuitName = Circuit[gnearnum].Circuit;
+          $scope.sCircuitlat = Circuit[gnearnum].lat;
+          $scope.sCircuitlon = Circuit[gnearnum].lon;
           $scope.sCircuitUrl = Circuit[gnearnum].shape;
+        // console.log("~~~~~~~~~~~");
+        // console.log($scope.sCircuitlat);
+        // console.log($scope.sCircuitlon);
         };
 
         this.toggle = function() {
           $scope.splitter.left.toggle();
-//          $scope.sCircuitgnearnum = gnearnum;
-//          $scope.sCircuitglat = glat;
-//          $scope.sCircuitglon = glon;
         };
         
         this.rangeChange = function(type,param) {
-            //set_param(param_obj,type,param)
             set_param($scope.obj,type,param)
             console.log(get_param($scope.obj,type))
         };
@@ -170,18 +179,20 @@
         glat = position.coords.latitude
         glon = position.coords.longitude
         console.log(gCircuit);
-        alert('Latitude: '      + position.coords.latitude          + '\n' +
-          'Longitude: '         + position.coords.longitude         + '\n' +
-          'Altitude: '          + position.coords.altitude          + '\n' +
-          'Accuracy: '          + position.coords.accuracy          + '\n' +
-          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-          'Heading: '           + position.coords.heading           + '\n' +
-          'Speed: '             + position.coords.speed             + '\n' +
-          'Near Circuit : '           + Circuit[gnearnum].Circuit             + '\n' +
-          'Near Circuit  unit: '    + d.distance_unit         + '\n' +
-          'Circuit num: '    + Circuit.length         + '\n' +
-          'neari: '    + gnearnum         + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n');
+        glatlontimestamp = new Date(position.timestamp).toLocaleString() 
+        // alert('Latitude: '      + position.coords.latitude          + '\n' +
+        //   'Longitude: '         + position.coords.longitude         + '\n' +
+        //   'Altitude: '          + position.coords.altitude          + '\n' +
+        //   'Accuracy: '          + position.coords.accuracy          + '\n' +
+        //   'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+        //   'Heading: '           + position.coords.heading           + '\n' +
+        //   'Speed: '             + position.coords.speed             + '\n' +
+        //   'Near Circuit : '           + Circuit[gnearnum].Circuit             + '\n' +
+        //   'Near Circuit  unit: '    + d.distance_unit         + '\n' +
+        //   'Circuit num: '    + Circuit.length         + '\n' +
+        //   'neari: '    + gnearnum         + '\n' +
+        //   'Timestamp: '         + position.timestamp                + '\n' +
+        //   'Timestamp: '         + timestamp              + '\n');
     }
 
     // onError Callback receives a PositionError object
@@ -192,10 +203,10 @@
     }
 
     ons.ready(function() {
-        Circuit = [ {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"},
-                    {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
-                    {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
-                    {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"}
+        Circuit = [ {"Circuit":"Honjo","shape":"circuitimage/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"},
+                    {"Circuit":"CircuitAkigase","shape":"circuitimage/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
+                    {"Circuit":"NewTokyoCircuit","shape":"circuitimage/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
+                    {"Circuit":"OoiMazda","shape":"circuitimage/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"}
                          ];
 //        paramData =[ {"type":"PlugGap", "param":"80"}, {"type":"ExhaustJoint", "param":"60"},
 //                             {"type":"FrontSprocket", "param":"11"},{"type":"RearSprocket", "param":"80"},
@@ -255,11 +266,7 @@
           スポンサーサイト
         </div>
       </ons-toolbar>
-      <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-        SportCar＆EuroCar
-        <p id = "myid"></p>
-        <iframe width="100%" height="100%" src="https://www.eurojp.com/all_cars/" scrolling="auto"></iframe>
-      </p>
+        <iframe width="100%" height="100%" src="https://www.astyle.co.jp/" scrolling="auto"></iframe>
     </ons-page>
   </template>
   <ons-template id="settings_base.html">
@@ -285,7 +292,7 @@
             <option value="">選択してください</option>&nbsp;
         </select><br>
         Near Circuit : {{sCircuitName}}&nbsp;
-        <p><img src="circuitimage/CircuitAkigase.gif" alt="circuitimage" width="100%"></p>
+        <p><img src={{sCircuitUrl}}  alt="circuitimage" width="100%"></p>
     </ons-page>
   </ons-template>
 
