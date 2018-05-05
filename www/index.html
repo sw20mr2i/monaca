@@ -68,23 +68,105 @@
 
         this.toggle = function() {
           $scope.splitter.left.toggle();
+          $scope.titlelist = gettitleList();
+          $scope.Circuitlist = gettitleCircuitNameList();
+          //console.log($scope.titlelist,$scope.Circuitlist);
         };
         
         this.rangeChange = function(type,param) {
             set_param($scope.obj,type,param)
             console.log(get_param($scope.obj,type))
         };
-        
+        this.changeData = function(selectdata){
+            console.log( selectdata );
+            $scope.selectdata = selectdata;
+            myNavigator.pushPage("data_load_datedata.html");
+        }
+        this.selectData = function(selecttime){
+            console.log( $scope.selectdata,selecttime );
+            $scope.selecttime = selecttime;
+        }
+        this.deleteDataLocal = function(del){
+            console.log( del,$scope.selecttime );
+            var deletebasename = $scope.selectdata+$scope.selecttime;
+                localStorage.removeItem(deletebasename);
+                localStorage.removeItem(deletebasename+'selectEntryClass' );
+                localStorage.removeItem(deletebasename+'selectChassis' );
+                localStorage.removeItem(deletebasename+'selectEngine' );
+                localStorage.removeItem(deletebasename+'selectSparkPlugs' );
+                localStorage.removeItem(deletebasename+'selectAirbox' );
+                localStorage.removeItem(deletebasename+'selectFrontWheels' );
+                localStorage.removeItem(deletebasename+'selectRearWheels' );
+                localStorage.removeItem(deletebasename+'selectFrontHubs' );
+                localStorage.removeItem(deletebasename+'selectRearHubs' );
+                localStorage.removeItem(deletebasename+'selectCircuitCondition' );
+            deletetitle($scope.selecttime);
+            $scope.titlelist = gettitleList();
+            $scope.Circuitlist = gettitleCircuitNameList();
+            myNavigator.popPage();
+        }
+
         this.saveloadDataLocal = function(saveload){
             console.log( saveload )
             if(saveload=='save'){
-            console.log( $scope.obj[0].param )
-                localStorage.setItem('key' ,$scope.obj[0].param);
-            }else if(saveload=='saveas'){
-                localStorage.setItem('key' ,$scope.obj[0].param);
+              var datetime =  (new Date()).toLocaleString();
+              var savename = $scope.sCircuitName+datetime;
+            //var datetime =  '20180430';
             }else{
-                $scope.obj[0].param = localStorage.getItem('key');
-            console.log( $scope.obj[0].param )
+              var datetime = $scope.selecttime;
+              var savename = $scope.selectdata+datetime;
+            }
+            var savename_selectEntryClass= savename+'selectEntryClass';
+            var savename_selectChassis= savename+'selectChassis';
+            var savename_selectEngine= savename+'selectEngine';
+            var savename_selectSparkPlugs= savename+'selectSparkPlugs';
+            var savename_selectAirbox= savename+'selectAirbox';
+            var savename_selectFrontWheels= savename+'selectFrontWheels';
+            var savename_selectRearWheels= savename+'selectRearWheels';
+            var savename_selectFrontHubs= savename+'selectFrontHubs';
+            var savename_selectRearHubs= savename+'selectRearHubs';
+            var savename_selectCircuitCondition= savename+'selectCircuitCondition';
+             console.log( savename )
+            if(saveload=='save'){
+                console.log( $scope.obj )
+                $scope.titlelist = addtitle($scope.sCircuitName,datetime,savename);
+                localStorage.setItem(savename , JSON.stringify($scope.obj));
+                localStorage.setItem(savename_selectEntryClass , JSON.stringify($scope.selectEntryClass));
+                localStorage.setItem(savename_selectChassis , JSON.stringify($scope.selectChassis));
+                localStorage.setItem(savename_selectEngine , JSON.stringify($scope.selectEngine));
+                localStorage.setItem(savename_selectSparkPlugs , JSON.stringify($scope.selectSparkPlugs));
+                localStorage.setItem(savename_selectAirbox , JSON.stringify($scope.selectAirbox));
+                localStorage.setItem(savename_selectFrontWheels , JSON.stringify($scope.selectFrontWheels));
+                localStorage.setItem(savename_selectRearWheels , JSON.stringify($scope.selectRearWheels));
+                localStorage.setItem(savename_selectFrontHubs , JSON.stringify($scope.selectFrontHubs));
+                localStorage.setItem(savename_selectRearHubs , JSON.stringify($scope.selectRearHubs));
+                localStorage.setItem(savename_selectCircuitCondition , JSON.stringify($scope.selectCircuitCondition));
+            }else if(saveload=='saveas'){
+                console.log( $scope.obj )
+                localStorage.setItem(savename , JSON.stringify($scope.obj));
+                localStorage.setItem(savename_selectEntryClass , JSON.stringify($scope.selectEntryClass));
+                localStorage.setItem(savename_selectChassis , JSON.stringify($scope.selectChassis));
+                localStorage.setItem(savename_selectEngine , JSON.stringify($scope.selectEngine));
+                localStorage.setItem(savename_selectSparkPlugs , JSON.stringify($scope.selectSparkPlugs));
+                localStorage.setItem(savename_selectAirbox , JSON.stringify($scope.selectAirbox));
+                localStorage.setItem(savename_selectFrontWheels , JSON.stringify($scope.selectFrontWheels));
+                localStorage.setItem(savename_selectRearWheels , JSON.stringify($scope.selectRearWheels));
+                localStorage.setItem(savename_selectFrontHubs , JSON.stringify($scope.selectFrontHubs));
+                localStorage.setItem(savename_selectRearHubs , JSON.stringify($scope.selectRearHubs));
+                localStorage.setItem(savename_selectCircuitCondition , JSON.stringify($scope.selectCircuitCondition));
+            }else{
+                $scope.obj = JSON.parse( localStorage.getItem(savename));
+                $scope.selectEntryClass = JSON.parse( localStorage.getItem(savename_selectEntryClass));
+                $scope.selectChassis = JSON.parse( localStorage.getItem(savename_selectChassis));
+                $scope.selectEngine = JSON.parse( localStorage.getItem(savename_selectEngine));
+                $scope.selectSparkPlugs = JSON.parse( localStorage.getItem(savename_selectSparkPlugs));
+                $scope.selectAirbox = JSON.parse( localStorage.getItem(savename_selectAirbox));
+                $scope.selectFrontWheels = JSON.parse( localStorage.getItem(savename_selectFrontWheels));
+                $scope.selectRearWheels = JSON.parse( localStorage.getItem(savename_selectRearWheels));
+                $scope.selectFrontHubs = JSON.parse( localStorage.getItem(savename_selectFrontHubs));
+                $scope.selectRearHubs = JSON.parse( localStorage.getItem(savename_selectRearHubs));
+                $scope.selectCircuitCondition = JSON.parse( localStorage.getItem(savename_selectCircuitCondition));
+                console.log( $scope.obj )
             }
         };
         
@@ -126,6 +208,10 @@
                 $scope.selectRearHubs = item;
                 console.log(type,$scope.selectRearHubs)
                 break;
+                case 'CircuitCondition':
+                $scope.selectCircuitCondition = item;
+                console.log(type,$scope.selectCircuitCondition)
+                break;
             }
         }
 
@@ -135,13 +221,23 @@
 //                           {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"},
 //                           {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"}
 //                         ];
-        $scope.obj = [ {"id":"0","type":"PlugGap", "param":"80"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
-                     {"id":"2","type":"FrontSprocket", "param":"11"},{"id":"3","type":"RearSprocket", "param":"80"},
-                     {"id":"4","type":"FrontColdAirPressure", "param":"50"},{"id":"5","type":"RearColdAirPressure", "param":"80"},
-                     {"id":"6","type":"FrontHotAirPressure", "param":"50"},{"id":"7","type":"RearHotAirPressure", "param":"80"},
-                     {"id":"8","type":"FrontTread", "param":"50"},{"id":"9","type":"RearTread", "param":"80"},
-                     {"id":"10","type":"HandlingFeeling", "param":"50"},{"id":"11","type":"EngineFeeling", "param":"80"},
-                     {"id":"12","type":"CarburetorLow", "param":"50"},{"id":"13","type":"CarburetorHi", "param":"80"}
+        $scope.oss= [
+            {"name":"KiKat", "kind":"android", "desc":"androidos4.4系です"},
+            {"name":"JellyBean", "kind":"android", "desc":"androidos4.1-3系です"},      
+            {"name":"Honycomb", "kind":"android","desc":"androidos3.x系です"},
+            {"name":"Mavericks", "kind":"osx","desc":"Mac 10.9"},
+            {"name":"Mountain Lion", "kind":"osx", "desc":"Mac 10.8"},
+            {"name":"Lion", "kind":"osx","desc":"Mac 10.7"},
+            {"name":"SnowLeopard", "kind":"osx", "desc":"Mac 10.6"},
+        ];
+        $scope.obj = [ {"id":"0","type":"PlugGap", "param":"100"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
+                     {"id":"2","type":"FrontSprocket", "param":"10"},{"id":"3","type":"RearSprocket", "param":"80"},
+                     {"id":"4","type":"FrontColdAirPressure", "param":"60"},{"id":"5","type":"RearColdAirPressure", "param":"60"},
+                     {"id":"6","type":"FrontHotAirPressure", "param":"70"},{"id":"7","type":"RearHotAirPressure", "param":"70"},
+                     {"id":"8","type":"FrontTread", "param":"10"},{"id":"9","type":"RearTread", "param":"140"},
+                     {"id":"10","type":"HandlingFeeling", "param":"80"},{"id":"11","type":"EngineFeeling", "param":"80"},
+                     {"id":"12","type":"CarburetorLow", "param":"120"},{"id":"13","type":"CarburetorHi", "param":"20"},
+                     {"id":"14","type":"EngineNo", "param":"1"}
                      ];
         $scope.EntryClassData = ["キッズ","コマー","カデット","ジュニア","ローカルSS","ヤマハSS","スーパーSS","その他"];
         $scope.selectEntryClass = null;
@@ -151,7 +247,7 @@
         $scope.selectEngine = null;
         $scope.SparkPlugsData = ["R7435-8","R7435-9","R7435-10","R4304A-8","R4304A-9","R4304A-10","B8EGV","B9EGV","B10EGV",
         "BPR8EIX","BPR9EIX","BPR10EIX","BR8EIX","BR9EIX","BR10EIX","IRITOP9","B9EG","R4118S-8","R4118S-9",
-        "IW01-27","IW01-29","IW01-31","IW01-32","その他"];
+        "IW24","IW27","IW29","IW31","IW32","IW34","IW01-27","IW01-29","IW01-31","IW01-32","その他"];
         $scope.selectSparkPlugs = null;
         $scope.AirboxData = ["KG SOCOREM","KG NITRO","KG APE-2","RR ASR-Paper","RR ASR-Sponge","RR ACTIVE","FL CIK10/18","その他"];
         $scope.selectAirbox = null;
@@ -163,7 +259,10 @@
         $scope.selectFrontHubs = null;
         $scope.RearHubsData = ["Nomal","Option","TripleK","その他"];
         $scope.selectRearHubs = null;
+        $scope.CircuitConditionData = ["Dry","Wet","HardWet","SemiWet","Rubber","Dusty","その他"];
+        $scope.selectCircuitCondition = null;
       });
+
     // device APIs are available
     //
     function onDeviceReady() {
@@ -242,8 +341,11 @@
           <ons-list-item ng-click="app.load('settings_view.html')" tappable>
             Settings view
           </ons-list-item>
-          <ons-list-item ng-click="app.load('data_save_load.html')" tappable>
-            データのセーブとロード
+          <ons-list-item ng-click="app.load('data_save_Circuitlist.html')" tappable>
+            データの保存と更新
+          </ons-list-item>
+          <ons-list-item ng-click="app.load('data_load_Circuitlist.html')" tappable>
+            データの読み出しと削除
           </ons-list-item>
           <ons-list-item ng-click="app.load('speedhive.html')" tappable>
             MYLAPS speedhive
@@ -303,7 +405,8 @@
                     FrontHotAirPressure = obj[6].param ;RearHotAirPressure = obj[7].param ;
                     FrontTread = obj[8].param ;RearTread = obj[9].param ;
                     HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
-                    CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; ">
+                    CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; 
+                    EngineNo = obj[14].param ; ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -314,11 +417,11 @@
           Settings memo
         </div>
       </ons-toolbar>
-      <p style="text-align: center; opacity: 0.6; padding-top: 5px;">
+      <p style="text-align: center; opacity: 0.6; padding-top: 0px;">
         <div id="info">
         <ons-row>
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-code-download"></ons-icon>
+            <ons-icon icon="ion-arrow-resize"></ons-icon>
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">PlugGap</ons-col>
           <ons-col>
@@ -339,9 +442,10 @@
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{ExhaustJoint}}
           </ons-col>
         </ons-row>
+        <ons-row style="margin-top: 10px;">
         <ons-row>
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-code-download"></ons-icon>
+            <ons-icon icon="ion-ios-clock-outline"></ons-icon>
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">CarburetorLow</ons-col>
           <ons-col>
@@ -353,7 +457,7 @@
         <ons-row style="margin-top: 10px;">
         <ons-row>
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-android-phone-landscape"></ons-icon>
+            <ons-icon icon="ion-ios-clock"></ons-icon>
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">CarburetorHi</ons-col>
           <ons-col>
@@ -387,7 +491,7 @@
         
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
+            <ons-icon icon="ion-ios-speedometer-outline"></ons-icon> 
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontColdAir</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
@@ -398,7 +502,7 @@
         </ons-row>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear"></ons-icon>
+            <ons-icon icon="ion-ios-speedometer"></ons-icon>
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">RearColdAir</ons-col>
           <ons-col>
@@ -409,7 +513,7 @@
         </ons-row>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
+            <ons-icon icon="ion-ios-speedometer-outline"></ons-icon> 
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontHotAir</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
@@ -420,7 +524,7 @@
         </ons-row>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear"></ons-icon>
+            <ons-icon icon="ion-ios-speedometer"></ons-icon>
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">RearHotAir</ons-col>
           <ons-col>
@@ -431,7 +535,7 @@
         </ons-row>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear-outline"></ons-icon> 
+            <ons-icon icon="ion-ios-barcode-outline"></ons-icon> 
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontTread</ons-col>
           <ons-col style="text-align: center; line-height: 31px;">
@@ -442,7 +546,7 @@
         </ons-row>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
-            <ons-icon icon="ion-ios-gear"></ons-icon>
+            <ons-icon icon="ion-ios-barcode"></ons-icon>
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">RearTread</ons-col>
           <ons-col>
@@ -451,36 +555,81 @@
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearTread}}
           </ons-col>
         </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-grid-view-outline"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">EngineNo</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="1" max="10" ng-model="EngineNo" ng-change="app.rangeChange('EngineNo',EngineNo)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{EngineNo}}
+          </ons-col>
+        </ons-row>
 
         
         
         <ons-row style="margin-top: 10px;">
-            SparkPlugs<select ng-model="selectSparkPlugs" ng-options="SparkPlugs for SparkPlugs in SparkPlugsData" ng-change="app.selectChange('SparkPlugs',selectSparkPlugs)">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-flame"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+             SparkPlugs</ons-col>
+            <select ng-model="selectSparkPlugs" ng-options="SparkPlugs for SparkPlugs in SparkPlugsData" ng-change="app.selectChange('SparkPlugs',selectSparkPlugs)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            Airbox<select ng-model="selectAirbox" ng-options="Airbox for Airbox in AirboxData" ng-change="app.selectChange('Airbox',selectAirbox)">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-android-checkbox-outline-blank"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+             Airbox</ons-col><select ng-model="selectAirbox" ng-options="Airbox for Airbox in AirboxData" ng-change="app.selectChange('Airbox',selectAirbox)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            FrontWheels<select ng-model="selectFrontWheels" ng-options="FrontWheels for FrontWheels in FrontWheelsData" ng-change="app.selectChange('FrontWheels',selectFrontWheels)">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-social-wordpress-outline"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+            FrontWheels</ons-col><select ng-model="selectFrontWheels" ng-options="FrontWheels for FrontWheels in FrontWheelsData" ng-change="app.selectChange('FrontWheels',selectFrontWheels)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            RearWheels<select ng-model="selectRearWheels" ng-options="RearWheels for RearWheels in RearWheelsData" ng-change="app.selectChange('RearWheels',selectRearWheels)">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-social-wordpress"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+            RearWheels</ons-col><select ng-model="selectRearWheels" ng-options="RearWheels for RearWheels in RearWheelsData" ng-change="app.selectChange('RearWheels',selectRearWheels)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            FrontHubs<select ng-model="selectFrontHubs" ng-options="FrontHubs for FrontHubs in FrontHubsData" ng-change="app.selectChange('FrontHubs',selectFrontHubs)">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-social-github-outline"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+            FrontHubs</ons-col><select ng-model="selectFrontHubs" ng-options="FrontHubs for FrontHubs in FrontHubsData" ng-change="app.selectChange('FrontHubs',selectFrontHubs)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
         <ons-row style="margin-top: 10px;">
-            RearHubs<select ng-model="selectRearHubs" ng-options="RearHubs for RearHubs in RearHubsData" ng-change="app.selectChange('RearHubs',selectRearHubs)">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-social-github"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+            RearHubs</ons-col><select ng-model="selectRearHubs" ng-options="RearHubs for RearHubs in RearHubsData" ng-change="app.selectChange('RearHubs',selectRearHubs)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-partlysunny-outline"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+            CircuitCondition</ons-col><select ng-model="selectCircuitCondition" ng-options="CircuitCondition for CircuitCondition in CircuitConditionData" ng-change="app.selectChange('CircuitCondition',selectCircuitCondition)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
@@ -520,7 +669,8 @@
                     FrontHotAirPressure = obj[6].param ;RearHotAirPressure = obj[7].param ;
                     FrontTread = obj[8].param ;RearTread = obj[9].param ;
                     HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
-                    CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; ">
+                    CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; 
+                    EngineNo=obj[14].param ; ">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -531,19 +681,22 @@
           Settings view
         </div>
       </ons-toolbar>
-      <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
         <div id="info">
-        <h4>EntryClass: <span id="EntryClass">{{selectEntryClass}} &nbsp;</span>,   DryRain: <span id="DryRain">Dry &nbsp;</span></h4>
-        <h4>Chassis: <span id="Chassis">{{selectChassis}} &nbsp;</span>,   Engine: <span id="Engine">{{selectEngine}}&nbsp;</span></h4>
-        <h4>ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">{{selectAirbox}}&nbsp;</span></h4>
-        <h4>SparkPlugs: <span id="SparkPlugs">{{selectSparkPlugs}} &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
-        <h4>CarburetorLow: <span id="CarburetorLow">{{CarburetorLow}} &nbsp;</span>,   CarburetorHi: <span id="CarburetorHi">{{CarburetorHi}}&nbsp;</span></h4>
-        <h4>FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
-        <h4>FrontWheels: <span id="FrontWheels">{{selectFrontWheels}}&nbsp;</span>, RearWheels: <span id="RearWheels">{{selectRearWheels}}&nbsp;</span></h4>
-        <h4>FrontHubs: <span id="FrontHubs">{{selectFrontHubs}}&nbsp;</span>, RearHubs: <span id="RearHubs">{{selectRearHubs}}&nbsp;</span></h4>     
-        <h4>FrontColdAir: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAir: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
-        <h4>FrontHotAir: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAir: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
-        <h4>FrontTread: <span id="FrontTread">{{FrontTread}}&nbsp;</span>, RearTread: <span id="RearTread">{{RearTread}}&nbsp;</span></h4>
+        <h4> EntryClass: <span id="EntryClass">{{selectEntryClass}} &nbsp;</span>,Chassis: <span id="Chassis">{{selectChassis}} &nbsp;</span></h4>
+        <h4> Circuit: <span id="NearCircuit">{{sCircuitName}} &nbsp;</span>,Condition: <span id="CircuitCondition">{{selectCircuitCondition}} &nbsp;</span></h4>
+        <h4> Weather: <span id="weather">{{weather_description}} &nbsp;</span>,WTime: <span id="WeatherGettime">{{weather_gettime}} &nbsp;</span></h4>
+        <h4> Temp: <span id="WeatherTemp">{{weather_temp}} &nbsp;</span>,Pressure: <span id="WeatherPressure">{{weather_pressure}} &nbsp;</span></h4>
+        <h4> Humidity: <span id="WeatherHumidity">{{weather_humidity}} &nbsp;</span>,Windspeed: <span id="WeatherWindspeed">{{weather_windspeed}} &nbsp;</span></h4>
+        <h4> Engine: <span id="Engine">{{selectEngine}}&nbsp;</span>,EngineNo: <span id="EngineNo">{{EngineNo}}&nbsp;</span></h4>
+        <h4> ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">{{selectAirbox}}&nbsp;</span></h4>
+        <h4> SparkPlugs: <span id="SparkPlugs">{{selectSparkPlugs}} &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
+        <h4> CarburetorLow: <span id="CarburetorLow">{{CarburetorLow}} &nbsp;</span>,   CarburetorHi: <span id="CarburetorHi">{{CarburetorHi}}&nbsp;</span></h4>
+        <h4> FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
+        <h4> FrontWheels: <span id="FrontWheels">{{selectFrontWheels}}&nbsp;</span>, RearWheels: <span id="RearWheels">{{selectRearWheels}}&nbsp;</span></h4>
+        <h4> FrontHubs: <span id="FrontHubs">{{selectFrontHubs}}&nbsp;</span>, RearHubs: <span id="RearHubs">{{selectRearHubs}}&nbsp;</span></h4>     
+        <h4> FrontColdAir: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAir: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
+        <h4> FrontHotAir: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAir: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
+        <h4> FrontTread: <span id="FrontTread">{{FrontTread}}&nbsp;</span>, RearTread: <span id="RearTread">{{RearTread}}&nbsp;</span></h4>
         </div>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
@@ -569,10 +722,9 @@
             <ons-icon icon="md-thumb-up"></ons-icon>
           </ons-col>
         </ons-row>
-      </p>
     </ons-page>
   </ons-template>
-  <ons-template id="data_save_load.html">
+  <ons-template id="data_save_Circuitlist.html" >
     <ons-page>
         <ons-toolbar>
           <div class="left">
@@ -581,19 +733,78 @@
             </ons-toolbar-button>
           </div>
           <div class="center">
-            データのセーブとロード
-             <div id="message"></div>
+            データの保存と更新
+             <div id="savemessage"></div>
           </div>
         </ons-toolbar>
         <ons-button ng-click="app.saveloadDataLocal('save')">
-            データ更新
+            設定内容の新規保存
         </ons-button>
         <ons-button ng-click="app.saveloadDataLocal('saveas')">
-            データ保存
+            保存済みデータの更新
         </ons-button>
+    </ons-page>
+  </ons-template>
+
+   <ons-template id="data_load_Circuitlist.html" >
+    <ons-page>
+        <ons-navigator var="myNavigator" page="data_load_Circuitlist2.html"></ons-navigator>
+    </ons-page>
+  </ons-template>
+  <ons-template id="data_load_Circuitlist2.html">
+    <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button ng-click="app.toggle()">
+                <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+          <div class="center">
+            データの読み出しと削除
+             <div id="loadmessage"></div>
+          </div>
+        </ons-toolbar>
+        <ons-list>
+          <ons-list-header>Circuit</ons-list-header>
+          <ons-list-item modifier="chevron" ng-repeat="Circuitlist in Circuitlist" ng-click="app.changeData(Circuitlist)">
+            {{Circuitlist}}
+          </ons-list-item>
+        </ons-list>
+    </ons-page>
+  </ons-template>
+
+  <ons-template id="data_load_datedata.html">
+    <ons-page>
+        <ons-toolbar>
+          <div class="left">
+            <ons-toolbar-button ng-click="app.toggle()">
+                <ons-icon icon="md-menu"></ons-icon>
+            </ons-toolbar-button>
+          </div>
+          <div class="center">
+            データの読み出しと削除
+             <div id="loadmessage"></div>
+          </div>
+        </ons-toolbar>
         <ons-button ng-click="app.saveloadDataLocal('load')">
-            データ読み出し
+            選択データの読み出し
         </ons-button>
+        <ons-button ng-click="app.deleteDataLocal('delete')" >
+            選択データの削除
+        </ons-button>
+        <form name="myForm">
+            <ons-list class="list">
+            <ons-list-header>{{selectdata}} -> date/time</ons-list-header>
+            <div style="border-bottom: 1px solid #ddd;" ng-repeat="datelist in titlelist"  ng-click="app.selectData(datelist.time)">
+                <ons-list-item class="list__item--tappable">
+                    <label class="radio-button--list-item">
+                        <input type="radio" name="Circuitid" ng-model="Circuitid" ng-value="datelist.Circuitid">
+                        {{datelist.Circuitid}} {{datelist.time}}
+                    </label>
+                </ons-list-item>
+            </div>
+            </ons-list>
+        </form>
     </ons-page>
   </ons-template>
 
