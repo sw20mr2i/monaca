@@ -19,7 +19,7 @@
   <script>
 //    param_obj =new new_param();
 //    console.log(param_obj)
-    gnearnum = -1;
+    gnearnum = 0;
     glat = 0;
     glon = 0;
     ons.bootstrap()
@@ -36,41 +36,36 @@
           .then(successCallback, errorCallback);
             function successCallback(response){
                 console.log("-----------------------");
-                $scope.weather_weather = response.data.weather[0].main;
-                $scope.weather_description = response.data.weather[0].description;
-                $scope.weather_gettimedt = response.data.dt;
-                $scope.weather_gettime = new Date(response.data.dt*1000).toLocaleString();
-                $scope.weather_temp = response.data.main.temp;
-                $scope.weather_pressure = response.data.main.pressure;
-                $scope.weather_humidity = response.data.main.humidity;
-                $scope.weather_windspeed = response.data.wind.speed;
-                $scope.weather_winddeg = response.data.wind.deg;
-                $scope.weather_area = response.data.name;
-                console.log($scope.weather_weather,$scope.weather_description,$scope.weather_gettime,
-                                 $scope.weather_temp,$scope.weather_pressure,$scope.weather_humidity,
-                                 $scope.weather_windspeed,$scope.weather_winddeg,$scope.weather_area); 
+                $scope.weather = {weather: response.data.weather[0].main,
+                              description:response.data.weather[0].description,
+                              gettimedt:response.data.dt,
+                              gettime:new Date(response.data.dt*1000).toLocaleString(),
+                              temp:response.data.main.temp,
+                              pressure:response.data.main.pressure,
+                              humidity:response.data.main.humidity,
+                              windspeed:response.data.wind.speed,
+                              winddeg:response.data.wind.deg,
+                              area:response.data.name};
+                console.log($scope.weather);
             }
             function errorCallback(error){
-                //error code
                 alert('天気情報の取得に失敗しました'); 
             }
-         $scope.splitter.content.load(page);
-             $scope.splitter.left.close();
-          $scope.sCircuitNum = gnearnum;
-          $scope.sCircuitName = Circuit[gnearnum].Circuit;
-          $scope.sCircuitlat = Circuit[gnearnum].lat;
-          $scope.sCircuitlon = Circuit[gnearnum].lon;
-          $scope.sCircuitUrl = Circuit[gnearnum].shape;
-        // console.log("~~~~~~~~~~~");
-        // console.log($scope.sCircuitlat);
-        // console.log($scope.sCircuitlon);
+            $scope.splitter.content.load(page);
+            $scope.splitter.left.close();
+            $scope.sCircuitNum = gnearnum;
+            $scope.sCircuitName = Circuit[gnearnum].Circuit;
+            $scope.sCircuitlat = Circuit[gnearnum].lat;
+            $scope.sCircuitlon = Circuit[gnearnum].lon;
+            $scope.sCircuitUrl = Circuit[gnearnum].shape;
+            //$scope.datetimetest =  formatDate(new Date(),'YYYY-MM-DDThh:mm:ss');
+            //console.log('###############',$scope.datetimetest);
         };
 
         this.toggle = function() {
           $scope.splitter.left.toggle();
           $scope.titlelist = gettitleList();
           $scope.Circuitlist = gettitleCircuitNameList();
-          //console.log($scope.titlelist,$scope.Circuitlist);
         };
         
         this.rangeChange = function(type,param) {
@@ -90,16 +85,20 @@
             console.log( del,$scope.selecttime );
             var deletebasename = $scope.selectdata+$scope.selecttime;
                 localStorage.removeItem(deletebasename);
+                localStorage.removeItem(deletebasename+'weather' );
                 localStorage.removeItem(deletebasename+'selectEntryClass' );
+                localStorage.removeItem(deletebasename+'selectSessionType' );
                 localStorage.removeItem(deletebasename+'selectChassis' );
                 localStorage.removeItem(deletebasename+'selectEngine' );
                 localStorage.removeItem(deletebasename+'selectSparkPlugs' );
                 localStorage.removeItem(deletebasename+'selectAirbox' );
+                localStorage.removeItem(deletebasename+'selectAxleType' );
                 localStorage.removeItem(deletebasename+'selectFrontWheels' );
                 localStorage.removeItem(deletebasename+'selectRearWheels' );
                 localStorage.removeItem(deletebasename+'selectFrontHubs' );
                 localStorage.removeItem(deletebasename+'selectRearHubs' );
                 localStorage.removeItem(deletebasename+'selectCircuitCondition' );
+                localStorage.removeItem(deletebasename+'txtImpressions' );
             deletetitle($scope.selecttime);
             $scope.titlelist = gettitleList();
             $scope.Circuitlist = gettitleCircuitNameList();
@@ -116,56 +115,72 @@
               var datetime = $scope.selecttime;
               var savename = $scope.selectdata+datetime;
             }
+            var savename_weather= savename+'weather';
             var savename_selectEntryClass= savename+'selectEntryClass';
+            var savename_selectSessionType= savename+'selectSessionType';
             var savename_selectChassis= savename+'selectChassis';
             var savename_selectEngine= savename+'selectEngine';
             var savename_selectSparkPlugs= savename+'selectSparkPlugs';
             var savename_selectAirbox= savename+'selectAirbox';
+            var savename_selectAxleType= savename+'selectAxleType';
             var savename_selectFrontWheels= savename+'selectFrontWheels';
             var savename_selectRearWheels= savename+'selectRearWheels';
             var savename_selectFrontHubs= savename+'selectFrontHubs';
             var savename_selectRearHubs= savename+'selectRearHubs';
             var savename_selectCircuitCondition= savename+'selectCircuitCondition';
+            var savename_txtImpressions= savename+'txtImpressions';
              console.log( savename )
             if(saveload=='save'){
                 console.log( $scope.obj )
                 $scope.titlelist = addtitle($scope.sCircuitName,datetime,savename);
                 localStorage.setItem(savename , JSON.stringify($scope.obj));
+                localStorage.setItem(savename_weather , JSON.stringify($scope.weather));
                 localStorage.setItem(savename_selectEntryClass , JSON.stringify($scope.selectEntryClass));
+                localStorage.setItem(savename_selectSessionType , JSON.stringify($scope.selectSessionType));
                 localStorage.setItem(savename_selectChassis , JSON.stringify($scope.selectChassis));
                 localStorage.setItem(savename_selectEngine , JSON.stringify($scope.selectEngine));
                 localStorage.setItem(savename_selectSparkPlugs , JSON.stringify($scope.selectSparkPlugs));
                 localStorage.setItem(savename_selectAirbox , JSON.stringify($scope.selectAirbox));
+                localStorage.setItem(savename_selectAxleType , JSON.stringify($scope.selectAxleType));
                 localStorage.setItem(savename_selectFrontWheels , JSON.stringify($scope.selectFrontWheels));
                 localStorage.setItem(savename_selectRearWheels , JSON.stringify($scope.selectRearWheels));
                 localStorage.setItem(savename_selectFrontHubs , JSON.stringify($scope.selectFrontHubs));
                 localStorage.setItem(savename_selectRearHubs , JSON.stringify($scope.selectRearHubs));
                 localStorage.setItem(savename_selectCircuitCondition , JSON.stringify($scope.selectCircuitCondition));
+                localStorage.setItem(savename_txtImpressions , JSON.stringify($scope.txtImpressions));
             }else if(saveload=='saveas'){
                 console.log( $scope.obj )
                 localStorage.setItem(savename , JSON.stringify($scope.obj));
+                localStorage.setItem(savename_weather , JSON.stringify($scope.weather));
                 localStorage.setItem(savename_selectEntryClass , JSON.stringify($scope.selectEntryClass));
+                localStorage.setItem(savename_selectSessionType , JSON.stringify($scope.selectSessionType));
                 localStorage.setItem(savename_selectChassis , JSON.stringify($scope.selectChassis));
                 localStorage.setItem(savename_selectEngine , JSON.stringify($scope.selectEngine));
                 localStorage.setItem(savename_selectSparkPlugs , JSON.stringify($scope.selectSparkPlugs));
                 localStorage.setItem(savename_selectAirbox , JSON.stringify($scope.selectAirbox));
+                localStorage.setItem(savename_selectAxleType , JSON.stringify($scope.selectAxleType));
                 localStorage.setItem(savename_selectFrontWheels , JSON.stringify($scope.selectFrontWheels));
                 localStorage.setItem(savename_selectRearWheels , JSON.stringify($scope.selectRearWheels));
                 localStorage.setItem(savename_selectFrontHubs , JSON.stringify($scope.selectFrontHubs));
                 localStorage.setItem(savename_selectRearHubs , JSON.stringify($scope.selectRearHubs));
                 localStorage.setItem(savename_selectCircuitCondition , JSON.stringify($scope.selectCircuitCondition));
+                localStorage.setItem(savename_txtImpressions , JSON.stringify($scope.txtImpressions));
             }else{
                 $scope.obj = JSON.parse( localStorage.getItem(savename));
+                $scope.weather = JSON.parse( localStorage.getItem(savename_selectEntryClass));
                 $scope.selectEntryClass = JSON.parse( localStorage.getItem(savename_selectEntryClass));
+                $scope.selectSessionType = JSON.parse( localStorage.getItem(savename_selectSessionType));
                 $scope.selectChassis = JSON.parse( localStorage.getItem(savename_selectChassis));
                 $scope.selectEngine = JSON.parse( localStorage.getItem(savename_selectEngine));
                 $scope.selectSparkPlugs = JSON.parse( localStorage.getItem(savename_selectSparkPlugs));
                 $scope.selectAirbox = JSON.parse( localStorage.getItem(savename_selectAirbox));
+                $scope.selectAxleType = JSON.parse( localStorage.getItem(savename_selectAxleType));
                 $scope.selectFrontWheels = JSON.parse( localStorage.getItem(savename_selectFrontWheels));
                 $scope.selectRearWheels = JSON.parse( localStorage.getItem(savename_selectRearWheels));
                 $scope.selectFrontHubs = JSON.parse( localStorage.getItem(savename_selectFrontHubs));
                 $scope.selectRearHubs = JSON.parse( localStorage.getItem(savename_selectRearHubs));
                 $scope.selectCircuitCondition = JSON.parse( localStorage.getItem(savename_selectCircuitCondition));
+                $scope.txtImpressions = JSON.parse( localStorage.getItem(savename_txtImpressions));
                 console.log( $scope.obj )
             }
         };
@@ -175,6 +190,10 @@
                 case 'EntryClass':
                 $scope.selectEntryClass = item;
                 console.log(type,$scope.selectEntryClass)
+                break;
+                case 'SessionType':
+                $scope.selectSessionType = item;
+                console.log(type,$scope.selectSessionType)
                 break;
                 case 'Chassi':
                 $scope.selectChassis = item;
@@ -191,6 +210,10 @@
                 case 'Airbox':
                 $scope.selectAirbox = item;
                 console.log(type,$scope.selectAirbox)
+                break;
+                case 'AxleType':
+                $scope.selectAxleType = item;
+                console.log(type,$scope.selectAxleType)
                 break;
                 case 'FrontWheels':
                 $scope.selectFrontWheels = item;
@@ -215,21 +238,12 @@
             }
         }
 
-//        $scope.obj = { type: 'PlugGap', param: '80'};
-//        $scope.Circuit = [ {"Circuit":"CircuitAkigase","shape":"ios/Circuit/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
-//                           {"Circuit":"NewTokyoCircuit","shape":"ios/Circuit/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
-//                           {"Circuit":"OoiMazda","shape":"ios/Circuit/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"},
-//                           {"Circuit":"Honjo","shape":"ios/Circuit/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"}
-//                         ];
-        $scope.oss= [
-            {"name":"KiKat", "kind":"android", "desc":"androidos4.4系です"},
-            {"name":"JellyBean", "kind":"android", "desc":"androidos4.1-3系です"},      
-            {"name":"Honycomb", "kind":"android","desc":"androidos3.x系です"},
-            {"name":"Mavericks", "kind":"osx","desc":"Mac 10.9"},
-            {"name":"Mountain Lion", "kind":"osx", "desc":"Mac 10.8"},
-            {"name":"Lion", "kind":"osx","desc":"Mac 10.7"},
-            {"name":"SnowLeopard", "kind":"osx", "desc":"Mac 10.6"},
-        ];
+        this.onClick = function() {
+          var Impressions1 = document.getElementById("Impressions1");
+          $scope.txtImpressions =Impressions1.value;
+          console.log('onClickText',Impressions1.value,$scope.txtImpressions);
+        }
+
         $scope.obj = [ {"id":"0","type":"PlugGap", "param":"100"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
                      {"id":"2","type":"FrontSprocket", "param":"10"},{"id":"3","type":"RearSprocket", "param":"80"},
                      {"id":"4","type":"FrontColdAirPressure", "param":"60"},{"id":"5","type":"RearColdAirPressure", "param":"60"},
@@ -241,6 +255,8 @@
                      ];
         $scope.EntryClassData = ["キッズ","コマー","カデット","ジュニア","ローカルSS","ヤマハSS","スーパーSS","その他"];
         $scope.selectEntryClass = null;
+        $scope.SessionTypeData = ["練習","公式練習","タイムトライアル","レース","選手権公式練習","選手権タイムトライアル","選手権レース"];
+        $scope.selectSessionType = null;
         $scope.ChassisData = ["Wildkart","Xenon","OTK","Birel","Energy","CROCPROMOTION","CRG","AMIGAO","REON","その他"];
         $scope.selectChassis = null;
         $scope.EngineData = ["EC04","Comer","MZ200","EX21","KX21","GX160","GX200","GX270","KT100SEC","KT100SD","X30","MicroMAX","MiniMAX","MAX","その他"];
@@ -251,6 +267,8 @@
         $scope.selectSparkPlugs = null;
         $scope.AirboxData = ["KG SOCOREM","KG NITRO","KG APE-2","RR ASR-Paper","RR ASR-Sponge","RR ACTIVE","FL CIK10/18","その他"];
         $scope.selectAirbox = null;
+        $scope.AxleTypeData = ["E","U","Q","N","H","HD","HH"];
+        $scope.selectAxleType = null;
         $scope.FrontWheelsData = ["MXP","MXJ","MXC","MXL","KK","DWT","FREE LINE","その他"];
         $scope.selectFrontWheels = null;
         $scope.RearWheelsData = ["MXP","MXJ","MXC","MXL","KK","DWT","FREE LINE","その他"];
@@ -265,13 +283,21 @@
 
     // device APIs are available
     //
+    document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady() {
+        Circuit = [ {"Circuit":"Honjo","shape":"circuitimage/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"},
+                    {"Circuit":"CircuitAkigase","shape":"circuitimage/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
+                    {"Circuit":"NewTokyoCircuit","shape":"circuitimage/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
+                    {"Circuit":"OoiMazda","shape":"circuitimage/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"}
+                         ];
+        console.log("onDeviceReady!");
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
 
     // onSuccess Geolocation
     //
     function onSuccess(position) {
+        //console.log('^^^^^^^^^^^onSuccess Geolocation^^^^^^^^',position.coords.latitude,position.coords.longitude);
         gnearnum =  getNearCircuit(position.coords.latitude,position.coords.longitude,Circuit)
         var d = getDistance(position.coords.latitude,position.coords.longitude,Circuit[gnearnum].lat,Circuit[gnearnum].lon)
         gCircuit = Circuit[gnearnum].Circuit
@@ -302,24 +328,8 @@
     }
 
     ons.ready(function() {
-        Circuit = [ {"Circuit":"Honjo","shape":"circuitimage/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"},
-                    {"Circuit":"CircuitAkigase","shape":"circuitimage/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
-                    {"Circuit":"NewTokyoCircuit","shape":"circuitimage/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
-                    {"Circuit":"OoiMazda","shape":"circuitimage/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"}
-                         ];
-//        paramData =[ {"type":"PlugGap", "param":"80"}, {"type":"ExhaustJoint", "param":"60"},
-//                             {"type":"FrontSprocket", "param":"11"},{"type":"RearSprocket", "param":"80"},
-//                             {"type":"DriverFeeling", "param":"50"}];
-//        param = paramData[0].param
         console.log("Onsen UI is ready!");
-//        monaca.getDeviceId(function(idid){
-//                    alert('Device ID: ' + idid);
-//                });
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
-        var date = (new Date()).toString()
-        console.log(date)
-//        PlugGap = get_param(paramData,'PlugGap')
-//        console.log(PlugGap)
+        //navigator.geolocation.getCurrentPosition(onSuccess, onError);
     });
   </script>
 </head>
@@ -384,7 +394,13 @@
              <div id="message"></div>
           </div>
         </ons-toolbar>
+<!--        SettingTime : <input type="datetime-local" name="datetime-local"  step="1" value="datetimetest for datetimetest in datetimetest">&nbsp;
+          <input type="button" value="SetTime" onclick="setValue('datetime-local');"><br>
+-->
         EntryClass : <select ng-model="selectEntryClass" ng-options="EntryClass for EntryClass in EntryClassData" ng-change="app.selectChange('EntryClass',selectEntryClass)">
+            <option value="">選択してください</option>&nbsp;
+        </select><br>
+        Session : <select ng-model="selectSessionType" ng-options="SessionType for SessionType in SessionTypeData" ng-change="app.selectChange('SessionType',selectSessionType)">
             <option value="">選択してください</option>&nbsp;
         </select><br>
         Chassi : <select ng-model="selectChassis" ng-options="Chassis for Chassis in ChassisData" ng-change="app.selectChange('Chassi',selectChassis)">
@@ -394,7 +410,9 @@
             <option value="">選択してください</option>&nbsp;
         </select><br>
         Near Circuit : {{sCircuitName}}&nbsp;
-        <p><img src={{sCircuitUrl}}  alt="circuitimage" width="100%"></p>
+         <p><img src={{sCircuitUrl}}  alt="circuitimage" width="100%"></p>
+        DriverNote : <ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input>
+         <ons-button modifier="outline" ng-click="app.onClick()">Set</ons-button>
     </ons-page>
   </ons-template>
 
@@ -488,7 +506,6 @@
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearSprocket}}
           </ons-col>
         </ons-row>
-        
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-ios-speedometer-outline"></ons-icon> 
@@ -566,9 +583,6 @@
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{EngineNo}}
           </ons-col>
         </ons-row>
-
-        
-        
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-flame"></ons-icon>
@@ -585,6 +599,15 @@
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">
              Airbox</ons-col><select ng-model="selectAirbox" ng-options="Airbox for Airbox in AirboxData" ng-change="app.selectChange('Airbox',selectAirbox)">
+                <option value="">選択してください</option>
+            </select>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-android-remove"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">
+            AxleType</ons-col><select ng-model="selectAxleType" ng-options="AxleType for AxleType in AxleTypeData" ng-change="app.selectChange('AxleType',selectAxleType)">
                 <option value="">選択してください</option>
             </select>
         </ons-row>
@@ -682,21 +705,23 @@
         </div>
       </ons-toolbar>
         <div id="info">
-        <h4> EntryClass: <span id="EntryClass">{{selectEntryClass}} &nbsp;</span>,Chassis: <span id="Chassis">{{selectChassis}} &nbsp;</span></h4>
-        <h4> Circuit: <span id="NearCircuit">{{sCircuitName}} &nbsp;</span>,Condition: <span id="CircuitCondition">{{selectCircuitCondition}} &nbsp;</span></h4>
-        <h4> Weather: <span id="weather">{{weather_description}} &nbsp;</span>,WTime: <span id="WeatherGettime">{{weather_gettime}} &nbsp;</span></h4>
-        <h4> Temp: <span id="WeatherTemp">{{weather_temp}} &nbsp;</span>,Pressure: <span id="WeatherPressure">{{weather_pressure}} &nbsp;</span></h4>
-        <h4> Humidity: <span id="WeatherHumidity">{{weather_humidity}} &nbsp;</span>,Windspeed: <span id="WeatherWindspeed">{{weather_windspeed}} &nbsp;</span></h4>
-        <h4> Engine: <span id="Engine">{{selectEngine}}&nbsp;</span>,EngineNo: <span id="EngineNo">{{EngineNo}}&nbsp;</span></h4>
-        <h4> ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">{{selectAirbox}}&nbsp;</span></h4>
-        <h4> SparkPlugs: <span id="SparkPlugs">{{selectSparkPlugs}} &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
-        <h4> CarburetorLow: <span id="CarburetorLow">{{CarburetorLow}} &nbsp;</span>,   CarburetorHi: <span id="CarburetorHi">{{CarburetorHi}}&nbsp;</span></h4>
-        <h4> FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
-        <h4> FrontWheels: <span id="FrontWheels">{{selectFrontWheels}}&nbsp;</span>, RearWheels: <span id="RearWheels">{{selectRearWheels}}&nbsp;</span></h4>
-        <h4> FrontHubs: <span id="FrontHubs">{{selectFrontHubs}}&nbsp;</span>, RearHubs: <span id="RearHubs">{{selectRearHubs}}&nbsp;</span></h4>     
-        <h4> FrontColdAir: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAir: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
-        <h4> FrontHotAir: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAir: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
-        <h4> FrontTread: <span id="FrontTread">{{FrontTread}}&nbsp;</span>, RearTread: <span id="RearTread">{{RearTread}}&nbsp;</span></h4>
+        <h4>&nbsp EntryClass: <span id="EntryClass">{{selectEntryClass}} &nbsp;</span>,Chassis: <span id="Chassis">{{selectChassis}} &nbsp;</span></h4>
+        <h4>&nbsp Circuit: <span id="NearCircuit">{{sCircuitName}} &nbsp;</span>,Condition: <span id="CircuitCondition">{{selectCircuitCondition}} &nbsp;</span></h4>
+        <h4>&nbsp Session: <span id="Session">{{selectSessionType}} &nbsp;</span></h4>
+        <h4>&nbsp WeatherTime: <span id="WeatherGettime">{{weather.gettime}} &nbsp;</span></h4>
+        <h4>&nbsp Weather: <span id="weather">{{weather.description}} &nbsp;</span></h4>
+        <h4>&nbsp Temp: <span id="WeatherTemp">{{weather.temp}} ℃&nbsp;</span>,Pressure: <span id="WeatherPressure">{{weather.pressure}} hPa&nbsp;</span></h4>
+        <h4>&nbsp Humidity: <span id="WeatherHumidity">{{weather.humidity}} ％&nbsp;</span>,Wind: <span id="WeatherWindspeed">{{weather.windspeed}} m/s&nbsp;</span></h4>
+        <h4>&nbsp Engine: <span id="Engine">{{selectEngine}}&nbsp;</span>,EngineNo: <span id="EngineNo">{{EngineNo}}&nbsp;</span></h4>
+        <h4>&nbsp ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">{{selectAirbox}}&nbsp;</span>,   AxleType: <span id="AxleType">{{selectAxleType}}&nbsp;</span></h4>
+        <h4>&nbsp SparkPlugs: <span id="SparkPlugs">{{selectSparkPlugs}} &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
+        <h4>&nbsp CarburetorLow: <span id="CarburetorLow">{{CarburetorLow}} &nbsp;</span>,   CarburetorHi: <span id="CarburetorHi">{{CarburetorHi}}&nbsp;</span></h4>
+        <h4>&nbsp FrontSprocket: <span id="FrontSprocket">{{FrontSprocket}} &nbsp;</span>,   RearSprocket: <span id="RearSprocket">{{RearSprocket}}&nbsp;</span></h4>
+        <h4>&nbsp FrontWheels: <span id="FrontWheels">{{selectFrontWheels}}&nbsp;</span>, RearWheels: <span id="RearWheels">{{selectRearWheels}}&nbsp;</span></h4>
+        <h4>&nbsp FrontHubs: <span id="FrontHubs">{{selectFrontHubs}}&nbsp;</span>, RearHubs: <span id="RearHubs">{{selectRearHubs}}&nbsp;</span></h4>     
+        <h4>&nbsp FrontColdAir: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAir: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
+        <h4>&nbsp FrontHotAir: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAir: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
+        <h4>&nbsp FrontTread: <span id="FrontTread">{{FrontTread}}&nbsp;</span>, RearTread: <span id="RearTread">{{RearTread}}&nbsp;</span></h4>
         </div>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
@@ -722,6 +747,8 @@
             <ons-icon icon="md-thumb-up"></ons-icon>
           </ons-col>
         </ons-row>
+        DriverNote : <ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input>
+         <ons-button modifier="outline" ng-click="app.onClick()">Set</ons-button>
     </ons-page>
   </ons-template>
   <ons-template id="data_save_Circuitlist.html" >
