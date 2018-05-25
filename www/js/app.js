@@ -92,6 +92,10 @@ function set_param(obj,type,param){
         obj[13].param = param;
     }else if(type=='EngineNo'){
         obj[14].param = param;
+    }else if(type=='CarbNo'){
+        obj[15].param = param;
+    }else if(type=='OILRatio'){
+        obj[16].param = param;
     }
 };
 function get_param(obj,type){
@@ -127,6 +131,10 @@ function get_param(obj,type){
         param = obj[13].param;
     }else if(type=='EngineNo'){
         param = obj[14].param;
+    }else if(type=='CarbNo'){
+        param = obj[15].param;
+    }else if(type=='OILRatio'){
+        param = obj[16].param;
     }
     return param;
 };

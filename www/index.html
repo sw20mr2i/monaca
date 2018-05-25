@@ -174,7 +174,7 @@
                 localStorage.setItem(savename_txtImpressions , JSON.stringify($scope.txtImpressions));
             }else{
                 $scope.obj = JSON.parse( localStorage.getItem(savename));
-                $scope.weather = JSON.parse( localStorage.getItem(savename_selectEntryClass));
+                $scope.weather = JSON.parse( localStorage.getItem(savename_weather));
                 $scope.selectEntryClass = JSON.parse( localStorage.getItem(savename_selectEntryClass));
                 $scope.selectSessionType = JSON.parse( localStorage.getItem(savename_selectSessionType));
                 $scope.selectChassis = JSON.parse( localStorage.getItem(savename_selectChassis));
@@ -258,8 +258,8 @@
                      {"id":"8","type":"FrontTread", "param":"10"},{"id":"9","type":"RearTread", "param":"140"},
                      {"id":"10","type":"HandlingFeeling", "param":"80"},{"id":"11","type":"EngineFeeling", "param":"80"},
                      {"id":"12","type":"CarburetorLow", "param":"120"},{"id":"13","type":"CarburetorHi", "param":"20"},
-                     {"id":"14","type":"EngineNo", "param":"1"}
-                     ];
+                     {"id":"14","type":"EngineNo", "param":"1"},{"id":"15","type":"CarbNo", "param":"1"},
+                     {"id":"16","type":"OILRatio", "param":"5"}];
         $scope.EntryClassData = ["キッズ","コマー","カデット","ジュニア","ローカルSS","ヤマハSS","スーパーSS","その他"];
         $scope.selectEntryClass = null;
         $scope.SessionTypeData = ["練習","公式練習","タイムトライアル","レース","選手権公式練習","選手権タイムトライアル","選手権レース"];
@@ -431,7 +431,7 @@
                     FrontTread = obj[8].param ;RearTread = obj[9].param ;
                     HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
                     CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; 
-                    EngineNo = obj[14].param ; ">
+                    EngineNo = obj[14].param ;CarbNo = obj[15].param ;OILRatio = obj[16].param ;">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -590,6 +590,30 @@
           <ons-col width="40px" style="text-align: center; line-height: 31px;">{{EngineNo}}
           </ons-col>
         </ons-row>
+
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-albums"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">CarbNo</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="1" max="10" ng-model="CarbNo" ng-change="app.rangeChange('CarbNo',CarbNo)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{CarbNo}}
+          </ons-col>
+        </ons-row>
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-flask"></ons-icon>
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">OILRatio</ons-col>
+          <ons-col>
+            <ons-range style="width: 100%;" min="5" max="30" ng-model="OILRatio" ng-change="app.rangeChange('OILRatio',OILRatio)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{OILRatio}}:1
+          </ons-col>
+        </ons-row>
+
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-flame"></ons-icon>
@@ -700,7 +724,7 @@
                     FrontTread = obj[8].param ;RearTread = obj[9].param ;
                     HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
                     CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; 
-                    EngineNo=obj[14].param ; ">
+                    EngineNo=obj[14].param ;CarbNo=obj[15].param ;OILRatio=obj[16].param ;">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -720,6 +744,7 @@
         <h4>&nbsp Temp: <span id="WeatherTemp">{{weather.temp}} ℃&nbsp;</span>,Pressure: <span id="WeatherPressure">{{weather.pressure}} hPa&nbsp;</span></h4>
         <h4>&nbsp Humidity: <span id="WeatherHumidity">{{weather.humidity}} ％&nbsp;</span>,Wind: <span id="WeatherWindspeed">{{weather.windspeed}} m/s&nbsp;</span></h4>
         <h4>&nbsp Engine: <span id="Engine">{{selectEngine}}&nbsp;</span>,EngineNo: <span id="EngineNo">{{EngineNo}}&nbsp;</span></h4>
+        <h4>&nbsp CarbNo: <span id="CarbNo">{{CarbNo}}&nbsp;</span>,OILRatio: <span id="OILRatio">{{OILRatio}}&nbsp;</span></h4>
         <h4>&nbsp ExhaustJoint: <span id="ExhaustJoint"> {{ExhaustJoint}}&nbsp;</span>,   Airboxes: <span id="Airboxes">{{selectAirbox}}&nbsp;</span>,   AxleType: <span id="AxleType">{{selectAxleType}}&nbsp;</span></h4>
         <h4>&nbsp SparkPlugs: <span id="SparkPlugs">{{selectSparkPlugs}} &nbsp;</span>,   PlugGap: <span id="PlugGap">{{PlugGap}}&nbsp;</span></h4>
         <h4>&nbsp CarburetorLow: <span id="CarburetorLow">{{CarburetorLow}} &nbsp;</span>,   CarburetorHi: <span id="CarburetorHi">{{CarburetorHi}}&nbsp;</span></h4>
