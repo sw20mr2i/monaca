@@ -25,41 +25,14 @@
     ons.bootstrap()
         .controller('AppController',function($scope,$http){
         this.load = function(page) {
-         var config = { 
-          params: { lat:Circuit[gnearnum].lat, 
-                    lon:Circuit[gnearnum].lon,
-                    units:'metric',
-                    APIKEY:'2e950c461075a5b6903bdf443a8c1072'
-              } 
-        };
-        $http.get("http://api.openweathermap.org/data/2.5/weather",config)    
-          .then(successCallback, errorCallback);
-            function successCallback(response){
-                console.log("-----------------------");
-                $scope.weather = {weather: response.data.weather[0].main,
-                              description:response.data.weather[0].description,
-                              gettimedt:response.data.dt,
-                              gettime:new Date(response.data.dt*1000).toLocaleString(),
-                              temp:response.data.main.temp,
-                              pressure:response.data.main.pressure,
-                              humidity:response.data.main.humidity,
-                              windspeed:response.data.wind.speed,
-                              winddeg:response.data.wind.deg,
-                              area:response.data.name};
-                console.log($scope.weather);
-            }
-            function errorCallback(error){
-                alert('天気情報の取得に失敗しました'); 
-            }
-            $scope.splitter.content.load(page);
-            $scope.splitter.left.close();
-            $scope.sCircuitNum = gnearnum;
-            $scope.sCircuitName = Circuit[gnearnum].Circuit;
-            $scope.sCircuitlat = Circuit[gnearnum].lat;
-            $scope.sCircuitlon = Circuit[gnearnum].lon;
-            $scope.sCircuitUrl = Circuit[gnearnum].shape;
-            //$scope.datetimetest =  formatDate(new Date(),'YYYY-MM-DDThh:mm:ss');
-            //console.log('###############',$scope.datetimetest);
+          $scope.sCircuitNum = gnearnum;
+          $scope.sCircuitName = Circuit[gnearnum].Circuit;
+          $scope.sCircuitlat = Circuit[gnearnum].lat;
+          $scope.sCircuitlon = Circuit[gnearnum].lon;
+          $scope.sCircuitUrl = Circuit[gnearnum].shape;
+
+          $scope.splitter.content.load(page);
+          $scope.splitter.left.close();
         };
 
         this.toggle = function() {
@@ -111,6 +84,40 @@
               var datetime =  (new Date()).toLocaleString();
               var savename = $scope.sCircuitName+datetime;
             //var datetime =  '20180430';
+
+
+                var config = { 
+                  params: { lat:Circuit[gnearnum].lat, 
+                            lon:Circuit[gnearnum].lon,
+                            units:'metric',
+                            APIKEY:'2e950c461075a5b6903bdf443a8c1072'
+                      } 
+                };
+                $http.get("http://api.openweathermap.org/data/2.5/weather",config)    
+                  .then(successCallback, errorCallback);
+                    function successCallback(response){
+                        console.log("-----------------------");
+                        $scope.weather = {weather: response.data.weather[0].main,
+                                      description:response.data.weather[0].description,
+                                      gettimedt:response.data.dt,
+                                      gettime:new Date(response.data.dt*1000).toLocaleString(),
+                                      temp:response.data.main.temp,
+                                      pressure:response.data.main.pressure,
+                                      humidity:response.data.main.humidity,
+                                      windspeed:response.data.wind.speed,
+                                      winddeg:response.data.wind.deg,
+                                      area:response.data.name};
+                        console.log($scope.weather);
+                    }
+                    function errorCallback(error){
+                        alert('天気情報の取得に失敗しました'); 
+                    }
+                    //$scope.datetimetest =  formatDate(new Date(),'YYYY-MM-DDThh:mm:ss');
+                    //console.log('###############',$scope.datetimetest);
+
+
+
+
             }else{
               var datetime = $scope.selecttime;
               var savename = $scope.selectdata+datetime;
