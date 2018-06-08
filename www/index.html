@@ -259,7 +259,9 @@
                      {"id":"10","type":"HandlingFeeling", "param":"80"},{"id":"11","type":"EngineFeeling", "param":"80"},
                      {"id":"12","type":"CarburetorLow", "param":"120"},{"id":"13","type":"CarburetorHi", "param":"20"},
                      {"id":"14","type":"EngineNo", "param":"1"},{"id":"15","type":"CarbNo", "param":"1"},
-                     {"id":"16","type":"OILRatio", "param":"5"}];
+                     {"id":"16","type":"OILRatio", "param":"5"},{"id":"17","type":"FrontAlignment", "param":"0"},
+                     {"id":"18","type":"ToeInOut", "param":"0"},{"id":"19","type":"FrontHeight", "param":"2"},
+                     {"id":"20","type":"RearHeight", "param":"2"}];
         $scope.EntryClassData = ["キッズ","コマー","カデット","ジュニア","ローカルSS","ヤマハSS","スーパーSS","その他"];
         $scope.selectEntryClass = null;
         $scope.SessionTypeData = ["練習","公式練習","タイムトライアル","レース","選手権公式練習","選手権タイムトライアル","選手権レース"];
@@ -294,6 +296,20 @@
     function onDeviceReady() {
         Circuit = [ {"Circuit":"Honjo","shape":"circuitimage/Honjo.gif", "lat":"36.1708810", "lon":"139.1088930"},
                     {"Circuit":"CircuitAkigase","shape":"circuitimage/CircuitAkigase.gif", "lat":"35.8603361", "lon":"139.5921962"},
+                    {"Circuit":"TwinRingMotegiNorth","shape":"circuitimage/TwinRingMotegiNorth.gif", "lat":"36.5388870", "lon":"140.2319810"},
+                    {"Circuit":"SuzukaCircuitSauth","shape":"circuitimage/SuzukaCircuitSauth.gif", "lat":"34.8430662", "lon":"136.5282003"},
+                    {"Circuit":"RainbowSportsFull","shape":"circuitimage/RainbowSportsFull.gif", "lat":"35.0494027", "lon":"136.6166180"},
+                    {"Circuit":"SportslandSugoWest","shape":"circuitimage/SportslandSugoWest.gif", "lat":"38.1413315", "lon":"140.7720938"},
+                    {"Circuit":"MobaraWest","shape":"circuitimage/MobaraWest.gif", "lat":"35.3819876", "lon":"140.2811814"},
+                    {"Circuit":"MobaraEast","shape":"circuitimage/MobaraEast.gif", "lat":"35.3823870", "lon":"140.2819070"},
+                    {"Circuit":"KobeSportsCircuit","shape":"circuitimage/KobeSportsCircuit.gif", "lat":"34.7081937", "lon":"135.0926599"},
+                    {"Circuit":"KartsoleilMogamigawa","shape":"circuitimage/KartsoleilMogamigawa.gif", "lat":"38.8339630", "lon":"139.9553410"},
+                    {"Circuit":"HarunaMotorsportsLand","shape":"circuitimage/HarunaMotorsportsLand.gif", "lat":"36.4526679", "lon":"138.9569736"},
+                    {"Circuit":"BiwakoSportsLand","shape":"circuitimage/BiwakoSportsLand.gif", "lat":"35.1520518", "lon":"135.8892459"},
+                    {"Circuit":"AutoParadiseGotenba","shape":"circuitimage/AutoParadiseGotenba.gif", "lat":"35.3577360", "lon":"138.9262130"},
+                    {"Circuit":"FestikaCircuitMizunami","shape":"circuitimage/FestikaCircuitMizunami.gif", "lat":"35.4152039", "lon":"137.2854648"},
+                    {"Circuit":"FestikaCircuitTochigi","shape":"circuitimage/FestikaCircuitTochigi.gif", "lat":"36.3934127", "lon":"139.6413059"},
+                    {"Circuit":"RAHanno","shape":"circuitimage/RAHanno.gif", "lat":"35.8536236", "lon":"139.2068982"},
                     {"Circuit":"NewTokyoCircuit","shape":"circuitimage/NewTokyoCircuit.gif", "lat":"35.4556534", "lon":"140.0914747"},
                     {"Circuit":"OoiMazda","shape":"circuitimage/OoiMazda.gif", "lat":"35.3367078", "lon":"139.1923430"}
                          ];
@@ -431,7 +447,10 @@
                     FrontTread = obj[8].param ;RearTread = obj[9].param ;
                     HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
                     CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; 
-                    EngineNo = obj[14].param ;CarbNo = obj[15].param ;OILRatio = obj[16].param ;">
+                    EngineNo = obj[14].param ;CarbNo = obj[15].param ;
+                    OILRatio = obj[16].param ;FrontAlignment = obj[17].param ; 
+                    ToeInOut = obj[18].param ;FrontHeight = obj[19].param ;
+                    RearHeight = obj[20].param ;">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -616,6 +635,54 @@
 
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-barcode-outline"></ons-icon> 
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontAlignment</ons-col>
+          <ons-col style="text-align: center; line-height: 31px;">
+            <ons-range style="width: 100%;" min="0" max="30" ng-model="FrontAlignment" ng-change="app.rangeChange('FrontAlignment',FrontAlignment)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{FrontAlignment}}
+          </ons-col>
+        </ons-row>
+
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-barcode-outline"></ons-icon> 
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">ToeInOut</ons-col>
+          <ons-col style="text-align: center; line-height: 31px;">
+            <ons-range style="width: 100%;" min="-5" max="5" ng-model="ToeInOut" ng-change="app.rangeChange('ToeInOut',ToeInOut)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{ToeInOut}}
+          </ons-col>
+        </ons-row>
+
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-barcode-outline"></ons-icon> 
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">FrontHeight</ons-col>
+          <ons-col style="text-align: center; line-height: 31px;">
+            <ons-range style="width: 100%;" min="1" max="3" ng-model="FrontHeight" ng-change="app.rangeChange('FrontHeight',FrontHeight)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{FrontHeight}}
+          </ons-col>
+        </ons-row>
+
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
+            <ons-icon icon="ion-ios-barcode-outline"></ons-icon> 
+          </ons-col>
+          <ons-col width="120px" style="text-align: left; line-height: 31px;">RearHeight</ons-col>
+          <ons-col style="text-align: center; line-height: 31px;">
+            <ons-range style="width: 100%;" min="1" max="3" ng-model="RearHeight" ng-change="app.rangeChange('RearHeight',RearHeight)"></ons-range>
+          </ons-col>
+          <ons-col width="40px" style="text-align: center; line-height: 31px;">{{RearHeight}}
+          </ons-col>
+        </ons-row>
+
+        <ons-row style="margin-top: 10px;">
+          <ons-col width="30px" style="text-align: center; line-height: 31px;">
             <ons-icon icon="ion-flame"></ons-icon>
           </ons-col>
           <ons-col width="120px" style="text-align: left; line-height: 31px;">
@@ -724,7 +791,10 @@
                     FrontTread = obj[8].param ;RearTread = obj[9].param ;
                     HandlingFeeling = obj[10].param; EngineFeeling = obj[11].param;
                     CarburetorLow = obj[12].param ;CarburetorHi = obj[13].param ; 
-                    EngineNo=obj[14].param ;CarbNo=obj[15].param ;OILRatio=obj[16].param ;">
+                    EngineNo=obj[14].param ;CarbNo=obj[15].param ;
+                    OILRatio=obj[16].param ;FrontAlignment = obj[17].param ; 
+                    ToeInOut = obj[18].param ;FrontHeight = obj[19].param ;
+                    RearHeight = obj[20].param ;">
       <ons-toolbar>
         <div class="left">
           <ons-toolbar-button ng-click="app.toggle()">
@@ -754,6 +824,8 @@
         <h4>&nbsp FrontColdAir: <span id="FrontColdAirPressure">{{FrontColdAirPressure}} &nbsp;</span>,   RearColdAir: <span id="RearColdAirPressure">{{RearColdAirPressure}}&nbsp;</span></h4>
         <h4>&nbsp FrontHotAir: <span id="FrontHotAirPressure">{{FrontHotAirPressure}}&nbsp;</span>, RearHotAir: <span id="RearHotAirPressure">{{RearHotAirPressure}}&nbsp;</span></h4>
         <h4>&nbsp FrontTread: <span id="FrontTread">{{FrontTread}}&nbsp;</span>, RearTread: <span id="RearTread">{{RearTread}}&nbsp;</span></h4>
+        <h4>&nbsp FrontAlignment: <span id="FrontAlignment">{{FrontAlignment}}&nbsp;</span>, ToeInOut: <span id="ToeInOut">{{ToeInOut}}&nbsp;</span></h4>
+        <h4>&nbsp FrontHeight: <span id="FrontHeight">{{FrontHeight}}&nbsp;</span>, RearHeight: <span id="RearHeight">{{RearHeight}}&nbsp;</span></h4>
         </div>
         <ons-row style="margin-top: 10px;">
           <ons-col width="30px" style="text-align: center; line-height: 31px;">

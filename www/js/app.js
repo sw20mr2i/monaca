@@ -96,6 +96,14 @@ function set_param(obj,type,param){
         obj[15].param = param;
     }else if(type=='OILRatio'){
         obj[16].param = param;
+    }else if(type=='FrontAlignment'){
+        obj[17].param = param;
+    }else if(type=='ToeInOut'){
+        obj[18].param = param;
+    }else if(type=='FrontHeight'){
+        obj[19].param = param;
+    }else if(type=='RearHeight'){
+        obj[20].param = param;
     }
 };
 function get_param(obj,type){
@@ -135,6 +143,14 @@ function get_param(obj,type){
         param = obj[15].param;
     }else if(type=='OILRatio'){
         param = obj[16].param;
+    }else if(type=='FrontAlignment'){
+        param = obj[17].param;
+    }else if(type=='ToeInOut'){
+        param = obj[18].param;
+    }else if(type=='FrontHeight'){
+        param = obj[19].param;
+    }else if(type=='RearHeight'){
+        param = obj[20].param;
     }
     return param;
 };

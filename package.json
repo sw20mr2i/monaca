@@ -2,11 +2,7 @@
     "name": "onsenui-v2-angular1-splitter",
     "cordova": {
         "plugins": {
-            "cordova-custom-config": {
-                "platform": "\"ios\"",
-                "target": "\"*-Info.plist\"",
-                "parent": "\"NSLocationWhenInUseUsageDescription\""
-            },
+            "cordova-custom-config": {},
             "monaca-plugin-monaca-core": {},
             "cordova-plugin-whitelist": {},
             "cordova-plugin-geolocation": {}
