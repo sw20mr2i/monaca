@@ -23,7 +23,74 @@
     glat = 0;
     glon = 0;
     ons.bootstrap()
-        .controller('AppController',function($scope,$http){
+        .controller('AppController',function($scope,$http,$interval){
+          $scope.besttimes = "00:00.000";
+          $scope.besttime = 0;
+          //console.log($scope.besttimes)
+          $scope.laptime = "00:00.000";
+          $scope.runtime = "00:00.000";
+          var promise;
+          var s_time=0;
+ 
+           //スタート：10msec毎に更新
+          this.startmytime = function(){
+            if(s_time==0){
+              s_time = new Date();
+              promise = $interval(function() {
+                  $scope.runtime = new Date() - s_time;
+                  }
+                  , 10
+                  );
+              beforetime = s_time - s_time;
+              console.log($scope.laptime);
+            }else{
+              console.log($scope.laptime);
+              console.log($scope.runtime);
+              $scope.laptime = $scope.runtime - beforetime;
+              beforetime = $scope.runtime;
+              if($scope.besttime == 0){
+                min=Math.floor($scope.laptime/1000/60);
+                sec=Math.floor($scope.laptime/1000);
+                if(min>0 | sec>0){
+                  msec=$scope.laptime-min*1000*60+sec*1000;
+                }else{
+                  msec=$scope.laptime;
+                }
+                $scope.besttime = $scope.laptime;
+                $scope.besttimes = ('00'+min).slice( -2 )+':'+('00'+sec).slice( -2 )+'.'+('000'+msec).slice( -3 )
+          console.log($scope.besttime)
+              }else if($scope.besttime > $scope.laptime){
+                min=Math.floor($scope.laptime/1000/60);
+                sec=Math.floor($scope.laptime/1000);
+                if(min>0 | sec>0){
+                  msec=$scope.laptime-min*1000*60+sec*1000;
+                }else{
+                  msec=$scope.laptime;
+                }
+                $scope.besttime = $scope.laptime;
+                $scope.besttimes = ('00'+min).slice( -2 )+':'+('00'+sec).slice( -2 )+'.'+('000'+msec).slice( -3 )
+          console.log($scope.besttime)
+              }
+            }
+          };    
+           //ストップ
+          this.stopmytime = function(){
+            $interval.cancel(promise);
+            s_time=0;
+            $scope.laptime = "00:00.000";
+            $scope.runtime = "00:00.000";
+          }
+           //リセット
+          this.resetmytime = function(){
+            $interval.cancel(promise);
+            s_time=0;
+            $scope.besttime = 0;
+            $scope.besttimes = "00:00.000";
+          console.log($scope.besttime)
+            $scope.laptime = "00:00.000";
+            $scope.runtime = "00:00.000";
+          }
+
         this.load = function(page) {
           $scope.sCircuitNum = gnearnum;
           $scope.sCircuitName = Circuit[gnearnum].Circuit;
@@ -46,8 +113,9 @@
             console.log(get_param($scope.obj,type))
         };
         this.changeData = function(selectdata){
-            console.log( selectdata );
+            //console.log( selectdata );
             $scope.selectdata = selectdata;
+            $scope.titleselectlist = getCircuittitleList(selectdata);
             myNavigator.pushPage("data_load_datedata.html");
         }
         this.selectData = function(selecttime){
@@ -72,6 +140,8 @@
                 localStorage.removeItem(deletebasename+'selectRearHubs' );
                 localStorage.removeItem(deletebasename+'selectCircuitCondition' );
                 localStorage.removeItem(deletebasename+'txtImpressions' );
+                localStorage.removeItem(deletebasename+'txtbesttime' );
+                localStorage.removeItem(deletebasename+'txtnote' );
             deletetitle($scope.selecttime);
             $scope.titlelist = gettitleList();
             $scope.Circuitlist = gettitleCircuitNameList();
@@ -136,6 +206,8 @@
             var savename_selectRearHubs= savename+'selectRearHubs';
             var savename_selectCircuitCondition= savename+'selectCircuitCondition';
             var savename_txtImpressions= savename+'txtImpressions';
+            var savename_txtbesttime= savename+'txtbesttime';
+            var savename_txtnote= savename+'txtnote';
              console.log( savename )
             if(saveload=='save'){
                 console.log( $scope.obj )
@@ -155,6 +227,8 @@
                 localStorage.setItem(savename_selectRearHubs , JSON.stringify($scope.selectRearHubs));
                 localStorage.setItem(savename_selectCircuitCondition , JSON.stringify($scope.selectCircuitCondition));
                 localStorage.setItem(savename_txtImpressions , JSON.stringify($scope.txtImpressions));
+                localStorage.setItem(savename_txtbesttime , JSON.stringify($scope.besttimes));
+                localStorage.setItem(savename_txtnote , JSON.stringify($scope.note));
             }else if(saveload=='saveas'){
                 console.log( $scope.obj )
                 localStorage.setItem(savename , JSON.stringify($scope.obj));
@@ -172,6 +246,8 @@
                 localStorage.setItem(savename_selectRearHubs , JSON.stringify($scope.selectRearHubs));
                 localStorage.setItem(savename_selectCircuitCondition , JSON.stringify($scope.selectCircuitCondition));
                 localStorage.setItem(savename_txtImpressions , JSON.stringify($scope.txtImpressions));
+                localStorage.setItem(savename_txtbesttime , JSON.stringify($scope.besttimes));
+                localStorage.setItem(savename_txtnote , JSON.stringify($scope.note));
             }else{
                 $scope.obj = JSON.parse( localStorage.getItem(savename));
                 $scope.weather = JSON.parse( localStorage.getItem(savename_weather));
@@ -188,6 +264,9 @@
                 $scope.selectRearHubs = JSON.parse( localStorage.getItem(savename_selectRearHubs));
                 $scope.selectCircuitCondition = JSON.parse( localStorage.getItem(savename_selectCircuitCondition));
                 $scope.txtImpressions = JSON.parse( localStorage.getItem(savename_txtImpressions));
+                $scope.besttimes = JSON.parse( localStorage.getItem(savename_txtbesttime));
+          //console.log($scope.besttimes)
+                $scope.note = JSON.parse( localStorage.getItem(savename_txtnote));
                 console.log( $scope.obj )
             }
         };
@@ -245,10 +324,25 @@
             }
         }
 
-        this.onClick = function() {
-          var Impressions1 = document.getElementById("Impressions1");
-          $scope.txtImpressions =Impressions1.value;
-          console.log('onClickText',Impressions1.value,$scope.txtImpressions);
+        this.onClick_Impressionform = function() {
+          var Impressions1 = document.Impressionform.Impression.value;
+          $scope.txtImpressions = document.Impressionform.Impression.value;
+          //console.log(document.Impressionform.Impression.value);
+          console.log('onClickText_Impressionform',Impressions1,$scope.txtImpressions);
+        }
+
+        this.onClick_LapTime = function() {
+          var LapTime1 = document.LapTimeform.LapTime.value;
+          $scope.besttimes = document.LapTimeform.LapTime.value;
+          //console.log(document.Impressionform.Impression.value);
+          //console.log('onClickText_LapTime',LapTime1,$scope.setbesttimes);
+        }
+
+        this.onClick_Note = function() {
+          var Note1 = document.Noteform.Note.value;
+          $scope.note = document.Noteform.Note.value;
+          //console.log(document.Impressionform.Impression.value);
+          console.log('onClickText_Note',Note1,$scope.note);
         }
 
         $scope.obj = [ {"id":"0","type":"PlugGap", "param":"100"}, {"id":"1","type":"ExhaustJoint", "param":"60"},
@@ -383,6 +477,9 @@
           <ons-list-item ng-click="app.load('speedhive.html')" tappable>
             MYLAPS speedhive
           </ons-list-item>
+          <ons-list-item ng-click="app.load('stopwatch.html')" tappable>
+            stopwatch
+          </ons-list-item>
         </ons-list>
       </ons-page>
     </ons-splitter-side>
@@ -434,8 +531,21 @@
         </select><br>
         Near Circuit : {{sCircuitName}}&nbsp;
          <p><img src={{sCircuitUrl}}  alt="circuitimage" width="100%"></p>
-        DriverNote : <ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input>
-         <ons-button modifier="outline" ng-click="app.onClick()">Set</ons-button>
+        DriverNote : <!--ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input-->
+        <form name="Impressionform">
+        <p><textarea name="Impression" style="width:98%; font-size:0.8em; overflow-y: scroll" rows="3" >{{txtImpressions}}</textarea></p>
+         <ons-button modifier="outline" ng-click="app.onClick_Impressionform()">Set</ons-button>
+         </form>
+        LapTime : <!--ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input-->
+        <form name="LapTimeform">
+        <p><textarea name="LapTime" style="width:98%; font-size:0.8em; overflow-y: scroll" rows="1" >{{besttimes}}</textarea></p>
+         <ons-button modifier="outline" ng-click="app.onClick_LapTime()">set</ons-button>
+         </form>
+        Note : <!--ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input-->
+        <form name="Noteform">
+         <p><textarea name="Note" style="width:98%; font-size:0.8em; overflow-y: scroll" rows="3">{{note}}</textarea></p>
+         <ons-button modifier="outline" ng-click="app.onClick_Note()">Set</ons-button>
+         </form>
     </ons-page>
   </ons-template>
 
@@ -851,8 +961,21 @@
             <ons-icon icon="md-thumb-up"></ons-icon>
           </ons-col>
         </ons-row>
-        DriverNote : <ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input>
-         <ons-button modifier="outline" ng-click="app.onClick()">Set</ons-button>
+        DriverNote : <!--ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input-->
+        <form name="Impressionform">
+         <p><textarea name="Impression" style="width:98%; font-size:0.8em; overflow-y: scroll" rows="3" readonly>{{txtImpressions}}</textarea></p>
+         <!--ons-button modifier="outline" ng-click="app.onClick()">Set</ons-button-->
+         </form>
+        LapTimeNote : <!--ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input-->
+        <form name="LapTimeform">
+         <p><textarea name="LapTime" style="width:98%; font-size:0.8em; overflow-y: scroll" rows="1" readonly>{{besttimes}}</textarea></p>
+         <!--ons-button modifier="outline" ng-click="app.onClick()">Set</ons-button-->
+         </form>
+        Note : <!--ons-input modifier="material"  id="Impressions1" value={{txtImpressions}}></ons-input-->
+        <form name="Noteform">
+         <p><textarea name="Note" style="width:98%; font-size:0.8em; overflow-y: scroll" rows="3" readonly>{{note}}</textarea></p>
+         <!--ons-button modifier="outline" ng-click="app.onClick()">Set</ons-button-->
+         </form>
     </ons-page>
   </ons-template>
   <ons-template id="data_save_Circuitlist.html" >
@@ -926,7 +1049,7 @@
         <form name="myForm">
             <ons-list class="list">
             <ons-list-header>{{selectdata}} -> date/time</ons-list-header>
-            <div style="border-bottom: 1px solid #ddd;" ng-repeat="datelist in titlelist"  ng-click="app.selectData(datelist.time)">
+            <div style="border-bottom: 1px solid #ddd;" ng-repeat="datelist in titleselectlist"  ng-click="app.selectData(datelist.time)">
                 <ons-list-item class="list__item--tappable">
                     <label class="radio-button--list-item">
                         <input type="radio" name="Circuitid" ng-model="Circuitid" ng-value="datelist.Circuitid">
@@ -954,5 +1077,26 @@
         <iframe width="100%" height="100%" src="https://speedhive.mylaps.com" scrolling="auto"></iframe>
     </ons-page>
   </template>
+
+  <ons-template id="stopwatch.html">
+    <ons-page>
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button ng-click="app.toggle()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+            stopwatch
+        </div>
+      </ons-toolbar>
+            <ons-button ng-click="app.startmytime()">スタート</ons-button>
+            <ons-button ng-click="app.stopmytime()">ストップ</ons-button>
+            <ons-button ng-click="app.resetmytime()">リセット</ons-button>
+            <h2>{{runtime|date:"mm:ss.sss"}}</h2>
+            <h2>{{laptime|date:"mm:ss.sss"}}</h2>
+            <h2>{{besttimes}}</h2>
+    </ons-page>
+  </ons-template>
 </body>
 </html>

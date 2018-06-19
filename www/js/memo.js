@@ -1,6 +1,6 @@
 // This is a JavaScript file
 
-///// Return list of title
+///// Return list of all title
 function gettitleList() {
     var list = localStorage.getItem("KartSettingTitleList");
     if (list == null) {
@@ -9,6 +9,18 @@ function gettitleList() {
         return JSON.parse(list);
     }
 }
+///// Return Circuit list of title
+function getCircuittitleList(Circuitname) {
+    var list = localStorage.getItem("KartSettingTitleList");
+    if (list == null) {
+        return new Array();
+    } else {
+      console.log( JSON.parse(list).filter(Circuitlist => Circuitlist.Circuitid === '') );
+      console.log( JSON.parse(list).filter(Circuitlist => Circuitlist.Circuitid ===Circuitname) );
+        return JSON.parse(list).filter(Circuitlist => Circuitlist.Circuitid === Circuitname);
+    }
+}
+
 function unique(array) {
 　var storage = {};
 　var uniqueArray = [];
